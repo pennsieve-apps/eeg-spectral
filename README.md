@@ -159,7 +159,12 @@ The cgroup peak includes the page cache of the EDF being read; per-window spectr
 app is sized at **1 vCPU, 2 GB, 900 s**, within the Lambda limits: a 24 h, 25-channel recording is
 estimated at under a minute.
 
-What it found (raw BIDS inputs; eeg-prep's derivative was not finished when this was measured):
+On eeg-prep's Siena derivative (13 runs it had written, 0.6-13.5 h): 13 of 13 ok in 51 s, 718 MB;
+far fewer windows rejected (median 1.4 %, eeg-prep had already cut bad segments and removed
+artifact components); PDR found in 10 of 13 (7.7-12.8 Hz); aperiodic exponents lower than on the
+raw files (median 0.99 vs 1.34), as expected after eeg-prep's filtering and ICA.
+
+What it found on the raw BIDS inputs:
 
 - **Siena** (adults with focal epilepsy, seizure-monitoring recordings, mostly without
   eyes-closed annotations): a PDR peak in 34 of 41 runs, median 8.8 Hz (6.5-13.5 Hz; the
@@ -178,7 +183,8 @@ What it found (raw BIDS inputs; eeg-prep's derivative was not finished when this
   left-weaker alpha gives asymmetry -0.26; planted eyes-open attenuation gives reactivity 0.95;
   planted left temporal delta gives the largest delta BSI at T7/T8 with signed -0.49 (left).
 
-Outputs on the demo data are in `workflow-scalp-eeg/data/work/{siena,chbmit,ds003555}/eeg-spectral/`.
+Outputs on the demo data are in `workflow-scalp-eeg/data/work/{siena,chbmit,ds003555}/eeg-spectral/`
+(Siena: on eeg-prep's derivative; the raw-BIDS run of all 41 runs is in `siena/eeg-spectral-raw-bids/`).
 
 
 ## Limitations
