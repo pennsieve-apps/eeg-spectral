@@ -232,6 +232,45 @@ def select_channels(raw_names: list[str], rec: I.Recording):
     return idx, names, contacts, label, reference, notes
 
 
+def check_lowpass(freqs: np.ndarray, psd: np.ndarray, lowpass: float, p: S.Params, notes: list[str]) -> S.Params:
+    """_channels.tsv says the data were low-passed below the top of the fit range. Believe it only
+    when the spectrum shows it: power 5-10 Hz above the cutoff at least 10 times lower than 5-10 Hz
+    below it (a 1/f spectrum alone drops about 2-3 times there). Some exports carry the display
+    filter of the reading software as the recording's filter (the BIDS Siena sidecars say 30 Hz,
+    the signals are not low-passed)."""
+    below = (freqs >= lowpass - 10) & (freqs <= lowpass - 5)
+    above = (freqs >= lowpass + 5) & (freqs <= lowpass + 10)
+    if below.sum() < 2 or above.sum() < 2:
+        ratio = 0.0
+    else:
+        ratio = float(np.median(psd[:, above].mean(axis=1) / np.maximum(psd[:, below].mean(axis=1), 1e-30)))
+    if ratio < 0.1:
+        fr = (p.fit_range[0], math.floor(lowpass * 0.9))
+        notes.append(f"fit range cut to {fr[0]:g}-{fr[1]:g} Hz: the data are low-passed at {lowpass:g} Hz")
+        return S.Params(**{**p.__dict__, "fit_range": fr})
+    notes.append(f"_channels.tsv high_cutoff {lowpass:g} Hz is not seen in the spectrum (power ratio "
+                 f"{ratio:.2f} across it): fit range kept at {p.fit_range[0]:g}-{p.fit_range[1]:g} Hz")
+    return p
+
+
+def unit_scale(raw, idx: list[int], rec: I.Recording, notes: list[str]) -> float:
+    """1e-6 when an EDF without a physical dimension holds microvolts (MNE then assumes volts,
+    so the data come out a million times too large: ds003555), else 1. Decided from a 10 s
+    stretch in the middle: a median channel standard deviation above 10 mV is not scalp EEG."""
+    orig = getattr(raw, "_orig_units", None) or {}
+    names = [raw.ch_names[i] for i in idx]
+    if not names or any(str(orig.get(n, "n/a")).lower() not in ("n/a", "", "none") for n in names):
+        return 1.0
+    sf = raw.info["sfreq"]
+    mid = raw.n_times // 2
+    a, b = max(0, mid - int(5 * sf)), min(raw.n_times, mid + int(5 * sf))
+    x = raw.get_data(picks=idx, start=a, stop=b, units="uV", verbose="error")
+    if np.median(np.std(x, axis=1)) > 1e4:
+        notes.append("EDF without a physical dimension: values read as µV (they would be implausible as V)")
+        return 1e-6
+    return 1.0
+
+
 def sidecar_reference(rec: I.Recording) -> str:
     js = I.sidecar(rec.path, "eeg.json")
     if not js:
@@ -264,14 +303,19 @@ def process(rec: I.Recording, params: S.Params, other: dict, out: Path, writers:
         raise ValueError(f"{len(idx)} usable EEG channel(s) (10-20/10-10 names) of {len(raw.ch_names)}")
     bipolar = montage == "bipolar-longitudinal"
 
-    # fit range: below Nyquist and below a low-pass the channels already went through
+    # fit range: below Nyquist (a low-pass in _channels.tsv is checked against the spectrum later)
     fr = params.fit_range
-    hi_cut = [c.high_cutoff for c in (rec.channels or []) if c.high_cutoff and c.high_cutoff > 0]
-    limit = min([sfreq / 2 * 0.9] + [min(hi_cut) * 0.9] if hi_cut else [sfreq / 2 * 0.9])
-    if fr[1] > limit:
-        fr = (fr[0], math.floor(limit))
-        notes.append(f"fit range cut to {fr[0]:g}-{fr[1]:g} Hz (low-pass / Nyquist)")
+    if fr[1] > sfreq / 2 * 0.9:
+        fr = (fr[0], math.floor(sfreq / 2 * 0.9))
+        notes.append(f"fit range cut to {fr[0]:g}-{fr[1]:g} Hz (Nyquist)")
     p = params if fr == params.fit_range else S.Params(**{**params.__dict__, "fit_range": fr})
+    hi_cut = [c.high_cutoff for c in (rec.channels or []) if c.high_cutoff and c.high_cutoff > 0]
+    lowpass = min(hi_cut) if hi_cut else None
+    lo_cut = [c.low_cutoff for c in (rec.channels or []) if c.low_cutoff and c.low_cutoff > 0]
+    if lo_cut and max(lo_cut) > 0.5 * fr[0]:
+        notes.append(f"high-pass at {max(lo_cut):g} Hz (_channels.tsv) close to the fit's lower edge "
+                     f"({fr[0]:g} Hz): the low end of the spectrum is attenuated and the aperiodic exponent "
+                     "may come out lower; compare exponents only between recordings filtered alike")
 
     intervals = S.analysable(duration, rec.bad, rec.seizures, other["exclude_seizure"], other["margin_s"])
     last_log = [time.monotonic()]
@@ -281,19 +325,22 @@ def process(rec: I.Recording, params: S.Params, other: dict, out: Path, writers:
             log.info("%s: %d of %d windows", rid, done, total)
             last_log[0] = time.monotonic()
 
+    scale = unit_scale(raw, idx, rec, notes)
+
     def read(a: int, b: int) -> np.ndarray:
-        return raw.get_data(picks=idx, start=a, stop=b, units="uV", verbose="error")
+        x = raw.get_data(picks=idx, start=a, stop=b, units="uV", verbose="error")
+        return x * scale if scale != 1.0 else x
 
     win = S.compute_windows(read, sfreq, len(idx), intervals, p, progress)
     try:
         return _analyse(rec, raw, win, p, other, out, writers, names, contacts, montage, reference, notes,
-                        intervals, sfreq, duration, bipolar, t0)
+                        intervals, sfreq, duration, bipolar, t0, lowpass)
     finally:
         win.close()
 
 
 def _analyse(rec, raw, win, p: S.Params, other, out: Path, writers, names, contacts, montage, reference, notes,
-             intervals, sfreq, duration, bipolar, t0) -> dict:
+             intervals, sfreq, duration, bipolar, t0, lowpass=None) -> dict:
     rid = rec.recording_id
     rinfo = S.reject(win, p)
     if rinfo.get("rejected_channels"):
@@ -306,6 +353,8 @@ def _analyse(rec, raw, win, p: S.Params, other, out: Path, writers, names, conta
     ch_names = [names[i] for i in ok]
     psd_all = S.mean_psd(win, keep)[ok]
     freqs = win.freqs
+    if lowpass is not None and lowpass * 0.9 < p.fit_range[1]:
+        p = check_lowpass(freqs, psd_all, lowpass, p, notes)
     used_s = S.covered_seconds(win.starts_s[keep], p.window_s)
 
     # band power and slowing
@@ -392,7 +441,11 @@ def _analyse(rec, raw, win, p: S.Params, other, out: Path, writers, names, conta
     # figures
     figs = []
     if other["figures"]:
-        figs = make_figures(out, rid, freqs, psd_all, ch_names, contacts, fits, bt, pdr, p, bipolar)
+        try:
+            figs = make_figures(out, rid, freqs, psd_all, ch_names, contacts, fits, bt, pdr, p, bipolar)
+        except Exception as e:  # noqa: BLE001 - a figure problem must not lose the tables
+            log.warning("%s: figures failed: %s", rid, e)
+            notes.append(f"figures failed: {e}")
 
     secs = time.monotonic() - t0
     exps = np.array([f.exponent for f in fits if f.ok])

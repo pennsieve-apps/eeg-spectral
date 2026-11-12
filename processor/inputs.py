@@ -108,6 +108,7 @@ class Channel:
     hemisphere: str = ""
     region: str = ""
     high_cutoff: float | None = None
+    low_cutoff: float | None = None
 
 
 @dataclass
@@ -170,7 +171,7 @@ def load_sidecars(rec: Recording) -> None:
             contacts = tuple(c for c in (r.get("contacts") or "").split("|") if c)
             chans.append(Channel(r["name"], (r.get("type") or "EEG").upper(), (r.get("status") or "good").lower(),
                                  r.get("status_description", ""), contacts, r.get("hemisphere", ""),
-                                 r.get("region", ""), fnum(r.get("high_cutoff"))))
+                                 r.get("region", ""), fnum(r.get("high_cutoff")), fnum(r.get("low_cutoff"))))
         rec.channels = chans
     ev = sidecar(rec.path, "events.tsv")
     if ev:

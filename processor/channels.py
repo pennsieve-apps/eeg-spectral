@@ -176,10 +176,12 @@ def classify(raw_names: list[str]) -> tuple[str, dict[str, tuple[str, tuple[str,
 
 
 def _dedupe(m: dict[str, tuple[str, tuple[str, ...]]]) -> dict[str, tuple[str, tuple[str, ...]]]:
-    """Keep the first raw channel of each canonical name (CHB-MIT repeats T8-P8)."""
+    """Keep the first raw channel of each canonical name (CHB-MIT repeats T8-P8) and of each pair
+    whose reverse is already there."""
     seen, out = set(), {}
     for raw, v in m.items():
-        if v[0] in seen:
+        rev = "-".join(reversed(v[1])) if len(v[1]) == 2 else None
+        if v[0] in seen or (rev and rev in seen):   # CHB-MIT has T7-P7 and P7-T7 (the same pair negated)
             continue
         seen.add(v[0])
         out[raw] = v

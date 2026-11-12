@@ -303,3 +303,42 @@ def test_derivatives_folder_of_a_raw_dataset_skipped(fixture, tmp_path, monkeypa
     assert run(monkeypatch, inp, tmp_path / "out", FIGURES="false") == 0
     prov = json.loads((tmp_path / "out" / "eeg-spectral" / "provenance.json").read_text())
     assert list(prov["recordings"]) == ["sub-SIE01_ses-01_task-szMonitoring_run-01"]
+
+
+def test_reversed_bipolar_pair_dropped():
+    mont, mapping, _ = C.classify(["FP1-F7", "F7-T7", "T7-P7", "P7-T7", "T7-FT9", "FT9-FT10", "T8-P8-0", "T8-P8-1"])
+    assert mont == "bipolar-longitudinal"
+    assert "P7-T7" not in mapping and "T8-P8-1" not in mapping and mapping["T7-FT9"][0] == "T7-FT9"
+
+
+def test_edf_without_physical_dimension_read_as_microvolts(tmp_path, monkeypatch, truth):
+    """ds003555's EDFs leave the physical dimension empty; MNE then assumes volts."""
+    from edfio import Edf, EdfSignal
+
+    rng = np.random.default_rng(1)
+    el = make_fixture.electrodes(120.0, rng, delta=False)
+    inp = tmp_path / "in"
+    inp.mkdir()
+    sigs = [EdfSignal(el[e] - np.mean(list(el.values()), axis=0), sampling_frequency=make_fixture.FS, label=e,
+                      physical_dimension="", physical_range=(-500, 500)) for e in make_fixture.ELECTRODES]
+    Edf(sigs).write(inp / "child_01.edf")
+    assert run(monkeypatch, inp, tmp_path / "out", FIGURES="false") == 0
+    out = tmp_path / "out" / "eeg-spectral"
+    prov = json.loads((out / "provenance.json").read_text())
+    rec = prov["recordings"]["sub-child_task-eeg_run-01"]
+    assert any("physical dimension" in n for n in rec["notes"]) and rec["rejected_windows"] == 0
+    assert abs(float(rows(out / "pdr.csv")[0]["pdr_hz"]) - truth["alpha_hz"]) < 0.3
+
+
+def test_lowpass_claim_checked_against_spectrum(fixture, tmp_path, monkeypatch, truth):
+    """A _channels.tsv high_cutoff of 30 Hz the data do not show (BIDS Siena) keeps the 1-45 Hz fit."""
+    import shutil
+
+    inp = tmp_path / "eeg"
+    shutil.copytree(fixture / "eeg", inp)
+    for ch in inp.rglob("*SYN02*_channels.tsv"):
+        ch.write_text(ch.read_text().replace("\t128\t", "\t30\t"))
+    assert run(monkeypatch, inp, tmp_path / "out", FIGURES="false") == 0
+    rec = json.loads((tmp_path / "out" / "eeg-spectral" / "provenance.json").read_text())["recordings"][
+        truth["SYN02"]["recording_id"]]
+    assert rec["fit_range_hz"] == [1.0, 45.0] and any("not seen in the spectrum" in n for n in rec["notes"])

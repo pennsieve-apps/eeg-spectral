@@ -57,7 +57,8 @@ def _info(names: list[str], contacts: dict[str, tuple[str, ...]]):
     pos = {}
     for n in names:
         p = C.position(contacts.get(n, ()))
-        if p is not None:
+        # one marker per place: a reversed bipolar pair (P7-T7 next to T7-P7) shares its midpoint
+        if p is not None and not any(np.allclose(p, q, atol=1e-4) for q in pos.values()):
             pos[n] = p
     if len(pos) < 4:
         return None, []
