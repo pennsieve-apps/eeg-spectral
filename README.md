@@ -149,10 +149,10 @@ almost all of the time is reading the EDF and the FFTs, single-threaded.
 | Input | Recordings | Wall time | Peak memory (cgroup) |
 |---|---|---|---|
 | Synthetic fixture (`make lambda-check`) | 2 (6 and 4 min) | 4.8 s | 204 MB |
-| BIDS Siena, all of it, raw BIDS (`--cpus 2 --memory 2g`) | 41 runs, 0.5-13.5 h, 41 ok | 188 s | 898 MB |
+| BIDS Siena, all of it, raw BIDS (`--cpus 2 --memory 2g`) | 41 runs, 0.5-13.5 h, 41 ok | 156-188 s | 835-898 MB (two runs) |
 | Siena sub-01 run-00 alone, 13.5 h, Lambda-style (`--cpus 1`, read-only, uid 65534) | 1 | 16 s | 624 MB |
-| CHB-MIT chb01_01/03/04/15/16, bipolar, loose EDF + summary | 5 x 1 h, 5 ok | 27 s | 369 MB |
-| OpenNeuro ds003555 sub-01..03, 3 h of sleep EEG at 1024 Hz | 3, 3 ok | 47 s | 464 MB |
+| CHB-MIT chb01_01/03/04/15/16, bipolar, loose EDF + summary | 5 x 1 h, 5 ok | 16-27 s | 369-460 MB |
+| OpenNeuro ds003555 sub-01..03, 3 h of sleep EEG at 1024 Hz | 3, 3 ok | 25-47 s | 465 MB |
 
 The cgroup peak includes the page cache of the EDF being read; per-window spectra above 256 MB
 (recordings longer than about 10 h at 19 channels) go to a memory-mapped file in `$TMPDIR`. The
