@@ -1,0 +1,264 @@
+cff-version: 1.2.0
+message: If you use this app, please cite it and the works it builds on, listed under references.
+type: software
+title: eeg-spectral
+abstract: Spectral biomarkers of clinical scalp EEG (routine and long-term video-EEG), one step of the Scalp EEG
+  Interictal Biomarkers workflow. Welch power spectra (MNE-Python, 4 s Hamming windows, 50% overlap) of the
+  artifact-free EEG outside seizures; absolute, relative and log band power; aperiodic exponent and offset and
+  oscillatory peaks with specparam (FOOOF); the posterior dominant rhythm (frequency, amplitude, left-right
+  asymmetry, reactivity) after Lodder and van Putten 2011; the revised Brain Symmetry Index (van Putten 2007) per
+  homologous pair and band; theta/alpha and (delta+theta)/(alpha+beta) slowing ratios; a shared long feature table.
+  Works on referential and bipolar-only recordings. Research outputs, to be reviewed by a clinician.
+authors:
+- name: Pennsieve (University of Pennsylvania)
+contact:
+- given-names: Joost
+  family-names: Wagenaar
+  orcid: https://orcid.org/0009-0004-5925-5451
+  affiliation: University of Pennsylvania
+repository-code: https://github.com/pennsieve-apps/eeg-spectral
+license: Apache-2.0
+keywords:
+- eeg
+- scalp-eeg
+- electrophysiology
+- epilepsy
+- neurology
+- spectral-analysis
+- biomarkers
+- aperiodic
+- specparam
+- posterior-dominant-rhythm
+- brain-symmetry-index
+references:
+- type: article
+  title: Parameterizing neural power spectra into periodic and aperiodic components
+  authors:
+  - family-names: Donoghue
+    given-names: Thomas
+  - family-names: Haller
+    given-names: Matar
+  - family-names: Peterson
+    given-names: Erik J.
+  - family-names: Varma
+    given-names: Paroma
+  - family-names: Sebastian
+    given-names: Priyadarshini
+  - family-names: Gao
+    given-names: Richard
+  - family-names: Noto
+    given-names: Torben
+  - family-names: Lara
+    given-names: Antonio H.
+  - family-names: Wallis
+    given-names: Joni D.
+  - family-names: Knight
+    given-names: Robert T.
+  - family-names: Shestyuk
+    given-names: Avgusta
+  - family-names: Voytek
+    given-names: Bradley
+  year: 2020
+  journal: Nature Neuroscience
+  volume: 23
+  issue: '12'
+  start: '1655'
+  end: '1665'
+  doi: 10.1038/s41593-020-00744-x
+  identifiers:
+  - type: other
+    value: '33230329'
+- type: software
+  title: 'FOOOF: fitting oscillations & one over f (specparam)'
+  authors:
+  - name: The Voytek Lab
+  version: 1.1.1
+  repository-code: https://github.com/fooof-tools/fooof
+  license: Apache-2.0
+- type: article
+  title: MEG and EEG data analysis with MNE-Python
+  authors:
+  - family-names: Gramfort
+    given-names: Alexandre
+  year: 2013
+  journal: Frontiers in Neuroscience
+  volume: 7
+  start: '267'
+  doi: 10.3389/fnins.2013.00267
+  identifiers:
+  - type: other
+    value: '24431986'
+- type: article
+  title: 'Automated EEG analysis: Characterizing the posterior dominant rhythm'
+  authors:
+  - family-names: Lodder
+    given-names: Shaun S.
+  - family-names: van Putten
+    given-names: Michel J.A.M.
+  year: 2011
+  journal: Journal of Neuroscience Methods
+  volume: 200
+  issue: '1'
+  start: '86'
+  end: '93'
+  doi: 10.1016/j.jneumeth.2011.06.008
+  identifiers:
+  - type: other
+    value: '21722667'
+- type: article
+  title: Fully automatic peak frequency estimation of the posterior dominant rhythm in a large retrospective hospital
+    EEG cohort
+  authors:
+  - family-names: Zibrandtsen
+    given-names: Ivan C.
+  - family-names: Kjaer
+    given-names: Troels W.
+  year: 2021
+  journal: Clinical Neurophysiology Practice
+  volume: 6
+  start: '1'
+  end: '9'
+  doi: 10.1016/j.cnp.2020.11.001
+  identifiers:
+  - type: other
+    value: '33385100'
+- type: article
+  title: The revised brain symmetry index
+  authors:
+  - family-names: van Putten
+    given-names: Michel J.A.M.
+  year: 2007
+  journal: Clinical Neurophysiology
+  volume: 118
+  issue: '11'
+  start: '2362'
+  end: '2367'
+  doi: 10.1016/j.clinph.2007.07.019
+  identifiers:
+  - type: other
+    value: '17888719'
+- type: data
+  title: Siena Scalp EEG Database
+  authors:
+  - family-names: Detti
+    given-names: Paolo
+  year: 2020
+  version: 1.0.0
+  publisher:
+    name: PhysioNet
+  doi: 10.13026/5d4a-j060
+- type: article
+  title: 'EEG Synchronization Analysis for Seizure Prediction: A Study on Data of Noninvasive Recordings'
+  authors:
+  - family-names: Detti
+    given-names: Paolo
+  - family-names: Vatti
+    given-names: Giampaolo
+  - family-names: Zabalo Manrique de Lara
+    given-names: Garazi
+  year: 2020
+  journal: Processes
+  volume: 8
+  issue: '7'
+  start: '846'
+  doi: 10.3390/pr8070846
+- type: data
+  title: BIDS Siena Scalp EEG Database
+  authors:
+  - family-names: Dan
+    given-names: Jonathan
+  - family-names: Detti
+    given-names: Paolo
+  year: 2024
+  version: v1.0.0
+  publisher:
+    name: EPFL
+  doi: 10.5281/zenodo.10640762
+- type: article
+  title: PhysioBank, PhysioToolkit, and PhysioNet
+  authors:
+  - family-names: Goldberger
+    given-names: Ary L.
+  - family-names: Amaral
+    given-names: Luis A. N.
+  - family-names: Glass
+    given-names: Leon
+  - family-names: Hausdorff
+    given-names: Jeffrey M.
+  - family-names: Ivanov
+    given-names: Plamen Ch.
+  - family-names: Mark
+    given-names: Roger G.
+  - family-names: Mietus
+    given-names: Joseph E.
+  - family-names: Moody
+    given-names: George B.
+  - family-names: Peng
+    given-names: Chung-Kang
+  - family-names: Stanley
+    given-names: H. Eugene
+  year: 2000
+  journal: Circulation
+  volume: 101
+  issue: '23'
+  start: e215
+  doi: 10.1161/01.CIR.101.23.e215
+  identifiers:
+  - type: other
+    value: '10851218'
+- type: data
+  title: CHB-MIT Scalp EEG Database
+  authors:
+  - family-names: Shoeb
+    given-names: Ali
+  year: 2010
+  publisher:
+    name: PhysioNet
+  doi: 10.13026/C2K01R
+- type: thesis
+  title: Application of machine learning to epileptic seizure onset detection and treatment
+  authors:
+  - family-names: Shoeb
+    given-names: Ali Hossam
+  year: 2009
+  institution:
+    name: Massachusetts Institute of Technology
+  url: https://dspace.mit.edu/handle/1721.1/54669
+- type: data
+  title: Dataset of EEG recordings of pediatric patients with epilepsy based on the 10-20 system
+  authors:
+  - name: Dorottya Cserpan
+  - name: Ece Boran
+  - name: Richard Rosch
+  - name: San Pietro Lo Biundo
+  - name: Georgia Ramantani
+  - name: Johannes Sarnthein
+  year: 2021
+  version: 1.0.1
+  publisher:
+    name: OpenNeuro
+  doi: 10.18112/openneuro.ds003555.v1.0.1
+- type: article
+  title: Scalp high-frequency oscillation rates are higher in younger children
+  authors:
+  - family-names: Cserpan
+    given-names: Dorottya
+  - family-names: Boran
+    given-names: Ece
+  - family-names: Lo Biundo
+    given-names: Santo Pietro
+  - family-names: Rosch
+    given-names: Richard
+  - family-names: Sarnthein
+    given-names: Johannes
+  - family-names: Ramantani
+    given-names: Georgia
+  year: 2021
+  journal: Brain Communications
+  volume: 3
+  issue: '2'
+  start: fcab052
+  doi: 10.1093/braincomms/fcab052
+  identifiers:
+  - type: other
+    value: '33870193'

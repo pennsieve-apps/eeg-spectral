@@ -1,0 +1,32 @@
+# Runtime dependencies, resolved on python:3.12.16-slim-bookworm (linux/amd64) and installed with
+# --no-deps --only-binary=:all: (every package is listed here, wheels only).
+# fooof 1.1.1: specparam (spectral parameterization), the stable release; specparam 2.0 is still a
+# release candidate (2.0.0rc7 on 2026-11-12). Same model and outputs.
+fooof==1.1.1
+# MNE-Python: reads EDF/BDF/BrainVision/FIF/EEGLAB lazily, a chunk at a time; Welch PSD; topomaps.
+mne==1.13.2
+numpy==2.5.4
+scipy==1.18.1
+matplotlib==3.11.2
+# dependencies of the above
+contourpy==1.4.0
+cycler==0.12.1
+decorator==5.3.1
+fonttools==4.68.0
+Jinja2==3.1.6
+kiwisolver==1.5.1
+lazy-loader==0.6
+MarkupSafe==3.0.4
+packaging==26.3
+pillow==13.0.0
+platformdirs==4.14.5
+pooch==1.9.0
+pyparsing==3.3.3
+python-dateutil==4.0.0
+requests==2.34.2
+certifi==2026.10.23
+charset-normalizer==3.5.2
+idna==3.20
+urllib3==2.8.0
+six==1.17.0
+tqdm==4.70.1

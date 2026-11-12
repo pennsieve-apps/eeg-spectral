@@ -1,0 +1,200 @@
+# yaml-language-server: $schema=https://schemas.pennsieve.io/app-manifest/v1.json
+schemaVersion: "1.0"
+application:
+  name: Scalp EEG Spectral Biomarkers
+  description: >-
+    Spectral biomarkers of clinical scalp EEG (routine or long-term video-EEG): Welch power spectra
+    (MNE-Python, 4 s Hamming windows, 50% overlap) of the artifact-free EEG outside seizures;
+    absolute, relative and log band power (delta, theta, alpha, beta, gamma); the aperiodic (1/f)
+    exponent and offset and oscillatory peaks with specparam (FOOOF, Donoghue et al. 2020); the
+    posterior dominant rhythm (frequency, amplitude, left-right asymmetry, reactivity; Lodder & van
+    Putten 2011); the revised Brain Symmetry Index (van Putten 2007) per homologous pair and band;
+    theta/alpha and (delta+theta)/(alpha+beta) slowing ratios; figures with captions and a shared
+    per-channel feature table. Reads the eeg-prep derivative, any BIDS-EEG dataset or loose EDF
+    files, referential or bipolar. Research outputs, to be reviewed by a clinician.
+  type: processor
+  tags:
+    - eeg
+    - scalp-eeg
+    - electrophysiology
+    - epilepsy
+    - neurology
+    - neuroscience
+    - spectral-analysis
+    - biomarkers
+    - band-power
+    - aperiodic
+    - specparam
+    - posterior-dominant-rhythm
+    - asymmetry
+runtime:
+  # One recording at a time, read in 60 s chunks; per-window spectra spill to $TMPDIR above 256 MB.
+  # Measured in Docker (amd64 emulation on an M-series Mac, --cpus 2 --memory 2g) on the 41 runs of
+  # the BIDS Siena database (README "Runtime"). Mostly single-threaded.
+  cpu: 1024
+  memory: 2048
+  computeTypes:
+    - standard
+  timeoutSeconds: 900
+parameters:
+  - name: BANDS
+    type: string
+    label: Bands
+    description: >-
+      conventions (delta 1-4, theta 4-8, alpha 8-13, beta 13-30, gamma 30-45 Hz; broadband 1-45 Hz is
+      the lowest to the highest edge) or a JSON object such as {"delta": [1, 4], "alpha": [8, 13]}.
+      The slowing ratios need bands named delta, theta, alpha and beta.
+    defaultValue: conventions
+  - name: WELCH_WINDOW_S
+    type: number
+    label: Welch window (s)
+    description: Length of each Hamming window of the Welch estimate (4 s gives 0.25 Hz bins).
+    defaultValue: 4
+    min: 1
+  - name: WELCH_OVERLAP
+    type: number
+    label: Welch overlap
+    description: Overlap between consecutive windows, as a fraction of the window.
+    defaultValue: 0.5
+    min: 0
+    max: 0.95
+  - name: FIT_RANGE
+    type: string
+    label: specparam range (Hz)
+    description: >-
+      Frequency range of the specparam fit, e.g. 1-45 (kept below mains noise). Cut automatically
+      below the Nyquist frequency and below a low-pass the channels already went through
+      (_channels.tsv high_cutoff).
+    defaultValue: "1-45"
+  - name: APERIODIC_MODE
+    type: string
+    label: Aperiodic mode
+    description: specparam aperiodic model, fixed (a straight line in log-log; the usual choice up to 45 Hz) or knee.
+    defaultValue: fixed
+    validValues: [fixed, knee]
+  - name: MAX_N_PEAKS
+    type: integer
+    label: Max peaks
+    description: Largest number of oscillatory peaks specparam fits per spectrum.
+    defaultValue: 6
+    min: 0
+  - name: PEAK_WIDTH_LIMITS
+    type: string
+    label: Peak width limits (Hz)
+    description: Smallest and largest peak bandwidth specparam may fit, e.g. 1-8.
+    defaultValue: "1-8"
+  - name: MIN_R_SQUARED
+    type: number
+    label: Minimum fit r²
+    description: Fits with a lower r_squared are flagged in aperiodic.csv and listed as warnings.
+    defaultValue: 0.9
+    min: 0
+    max: 1
+  - name: PDR_RANGE
+    type: string
+    label: PDR search range (Hz)
+    description: The posterior dominant rhythm is the strongest specparam peak of the posterior channels in this range.
+    defaultValue: "6-14"
+  - name: PDR_WINDOWS
+    type: string
+    label: PDR windows
+    description: >-
+      Which EEG the posterior dominant rhythm is measured on. Annotated eyes-closed EEG
+      (_events.tsv eyes_closed) is always used when there are at least 5 windows of it. Without
+      it: auto uses all artifact-free windows outside annotated sleep (with a warning);
+      alpha-richest uses the quarter of those windows with the most posterior 6-14 Hz power, a
+      stand-in for relaxed wakefulness with eyes closed in long recordings.
+    defaultValue: auto
+    validValues: [auto, alpha-richest]
+  - name: EXCLUDE_SEIZURE
+    type: boolean
+    label: Leave out seizures
+    description: Leave annotated seizures (and SEIZURE_MARGIN_S around them) out of every spectrum.
+    defaultValue: true
+  - name: SEIZURE_MARGIN_S
+    type: number
+    label: Seizure margin (s)
+    description: Seconds left out before each seizure onset and after its end (to the end of the recording when the end is unknown).
+    defaultValue: 60
+    min: 0
+  - name: REJECT
+    type: boolean
+    label: Automatic artifact rejection
+    description: >-
+      Leave out windows with large peak-to-peak amplitude, flat signals or muscle bursts (on top of
+      the bad_segment and artifact events eeg-prep wrote), and channels that are flat or noisy in
+      most of the recording.
+    defaultValue: true
+  - name: REJECT_UV
+    type: number
+    label: Rejection threshold (µV)
+    description: Peak-to-peak amplitude in a 4 s window above which a channel's window is left out.
+    defaultValue: 500
+    min: 1
+  - name: WINDOWED
+    type: boolean
+    label: Time course
+    description: Also write windowed.csv, relative band power and theta/alpha ratio per WINDOWED_S block.
+    defaultValue: false
+  - name: WINDOWED_S
+    type: number
+    label: Time-course block (s)
+    description: Block length of windowed.csv.
+    defaultValue: 60
+    min: 1
+  - name: FIGURES
+    type: boolean
+    label: Figures
+    description: Write three figures per recording (spectrum per region, topomaps, posterior dominant rhythm).
+    defaultValue: true
+  - name: CHUNK_S
+    type: number
+    label: Chunk (s)
+    description: Seconds of signal read at a time.
+    defaultValue: 60
+    min: 5
+  - name: THREADS
+    type: integer
+    label: Threads
+    description: BLAS threads; 0 = from the container's CPU quota, capped by its memory.
+    defaultValue: 0
+    min: 0
+  - name: LABEL
+    type: string
+    label: Output subfolder
+    description: When set, results go to OUTPUT_DIR/eeg-spectral/<LABEL>/ (for a workflow that runs this step twice).
+    defaultValue: ""
+inputs:
+  - name: eeg
+    description: >-
+      The eeg-prep BIDS-EEG derivative (recordings.csv, *_desc-preproc_eeg.edf with _channels.tsv
+      and _events.tsv), any BIDS-EEG dataset, or loose EDF/EDF+/BDF/BrainVision/FIF/EEGLAB files
+      (referential or bipolar). Found anywhere under the input folder.
+    mediaTypes:
+      - application/edf
+      - text/csv
+      - text/tab-separated-values
+      - application/json
+      - application/octet-stream
+    placement: subfolder
+    required: true
+outputs:
+  - name: spectral
+    description: >-
+      eeg-spectral/: bandpower.csv, aperiodic.csv, peaks.csv, pdr.csv, asymmetry.csv, slowing.csv,
+      features.csv (recording_id, channel, feature, value), windowed.csv (WINDOWED), figures/*.png,
+      summary.json (headline numbers and captioned figures for eeg-report) and provenance.json.
+    mediaTypes:
+      - text/csv
+      - application/json
+      - image/png
+
+# How a release is tested before it is made public: the inputs a review run uses.
+# See app-deploy-service docs/app-manifest-review.md.
+review:
+  version: 1
+  inputs:
+    eeg:
+      generate:
+        command: python -m tests.make_fixture "$REVIEW_INPUT_DIR"
+        root: eeg
