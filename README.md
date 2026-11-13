@@ -149,42 +149,44 @@ almost all of the time is reading the EDF and the FFTs, single-threaded.
 | Input | Recordings | Wall time | Peak memory (cgroup) |
 |---|---|---|---|
 | Synthetic fixture (`make lambda-check`) | 2 (6 and 4 min) | 4.8 s | 204 MB |
-| BIDS Siena, all of it, raw BIDS (`--cpus 2 --memory 2g`) | 41 runs, 0.5-13.5 h, 41 ok | 156-188 s | 835-898 MB (two runs) |
-| Siena sub-01 run-00 alone, 13.5 h, Lambda-style (`--cpus 1`, read-only, uid 65534) | 1 | 16 s | 624 MB |
-| CHB-MIT chb01_01/03/04/15/16, bipolar, loose EDF + summary | 5 x 1 h, 5 ok | 16-27 s | 369-460 MB |
-| OpenNeuro ds003555 sub-01..03, 3 h of sleep EEG at 1024 Hz | 3, 3 ok | 25-47 s | 465 MB |
+| eeg-prep's Siena derivative (`--cpus 2 --memory 2g`) | 41 runs, 0.5-13.5 h, 41 ok | 183 s | 933 MB |
+| eeg-prep's CHB-MIT chb01 derivative (bipolar) | 42 x 1 h, 42 ok | 110 s | 414 MB |
+| eeg-prep's ds003555 derivative (3 h sleep EEG, 1024 Hz) | 3, 3 ok | 31 s | 830 MB |
+| Raw BIDS Siena, all of it | 41 runs, 41 ok | 156-188 s | 835-898 MB |
+| Siena sub-01 run-00 alone, 13.5 h raw, Lambda-style (`--cpus 1`, read-only, uid 65534) | 1 | 16 s | 624 MB |
 
 The cgroup peak includes the page cache of the EDF being read; per-window spectra above 256 MB
 (recordings longer than about 10 h at 19 channels) go to a memory-mapped file in `$TMPDIR`. The
 app is sized at **1 vCPU, 2 GB, 900 s**, within the Lambda limits: a 24 h, 25-channel recording is
 estimated at under a minute.
 
-On eeg-prep's Siena derivative (13 runs it had written, 0.6-13.5 h): 13 of 13 ok in 51 s, 718 MB;
-far fewer windows rejected (median 1.4 %, eeg-prep had already cut bad segments and removed
-artifact components); PDR found in 10 of 13 (7.7-12.8 Hz); aperiodic exponents lower than on the
-raw files (median 0.99 vs 1.34), as expected after eeg-prep's filtering and ICA.
+What it found on eeg-prep's derivatives (the workflow's input):
 
-What it found on the raw BIDS inputs:
+- **Siena** (adults with focal epilepsy, seizure-monitoring recordings, no eyes-closed
+  annotations): a PDR peak in 37 of 41 runs, median 8.8 Hz (6.2-13.1 Hz; values above 12 Hz are
+  sleep spindles in recordings made largely asleep, see Limitations); recording rBSI median
+  0.085 (0.035-0.32); median aperiodic exponent per run 1.02 (0.46-2.03), lower than on the raw
+  files (1.34) after eeg-prep's filtering and ICA; 1.2 % of windows rejected in the median run
+  (16 % at most), since eeg-prep had already marked the technical artifacts.
+- **CHB-MIT chb01** (bipolar only, 42 hours): a PDR peak in 26 of 42 (median 11.3 Hz, 7.9-13.4;
+  many hours are sleep); rBSI median 0.10; exponent median 1.92; 19 % of windows rejected in the
+  median hour (the automatic amplitude/muscle rules on top of eeg-prep).
+- **ds003555** (children, sleep EEG): PDR peaks in 2 of 3 (8.4 and 10.2 Hz); exponents 1.9-2.8.
 
-- **Siena** (adults with focal epilepsy, seizure-monitoring recordings, mostly without
-  eyes-closed annotations): a PDR peak in 34 of 41 runs, median 8.8 Hz (6.5-13.5 Hz; the
-  values above 12 Hz are sleep spindles in recordings made largely asleep, see Limitations);
-  recording rBSI median 0.057 (0.015-0.209); median aperiodic exponent per run 1.34
-  (0.78-2.04); 6 % of windows rejected in the median run, 45 % in the worst (raw, unfiltered
-  clinical data with 5 mV artifacts). The side of the delta-band asymmetry (`signed`) matched the
-  side of the electrodes in the seizure annotations in 9 of 13 patients with one-sided annotations
-  (exploratory; small asymmetries, no clinical claim).
-- **CHB-MIT chb01** (bipolar only): PDR 9.9-11.0 Hz in 4 of 5 hours; the reversed duplicate pair
-  `P7-T7` and the `T8-P8-1` copy are left out, 21 of 23 channels used.
-- **ds003555** (children, sleep EEG): PDR peaks at 12-13 Hz in two children are spindles, as
-  expected for sleep; the EDFs carry no physical dimension and are read as µV (noted per recording).
+On the raw BIDS Siena files (before eeg-prep): PDR in 34 of 41 (median 8.8 Hz), rBSI median
+0.057, exponent median 1.34, 6 % of windows rejected in the median run (45 % in the worst, raw
+clinical data with 5 mV artifacts). The side of the delta-band asymmetry (`signed`) matched the
+side of the electrodes in the seizure annotations in 9 of 13 patients with one-sided annotations
+(exploratory; small asymmetries, no clinical claim). On the raw CHB-MIT EDFs the reversed
+duplicate pair `P7-T7` and the `T8-P8-1` copy are left out; ds003555's EDFs carry no physical
+dimension and are read as µV (noted per recording).
 - **Synthetic fixture**: planted 9.5 Hz alpha recovered at 9.51 Hz (referential) and 9.50 Hz
   (bipolar); planted exponent 1.5 recovered at 1.499 and 1.501 (median over channels); planted
   left-weaker alpha gives asymmetry -0.26; planted eyes-open attenuation gives reactivity 0.95;
   planted left temporal delta gives the largest delta BSI at T7/T8 with signed -0.49 (left).
 
 Outputs on the demo data are in `workflow-scalp-eeg/data/work/{siena,chbmit,ds003555}/eeg-spectral/`
-(Siena: on eeg-prep's derivative; the raw-BIDS run of all 41 runs is in `siena/eeg-spectral-raw-bids/`).
+(all three on eeg-prep's final derivatives; the raw-BIDS Siena run is in `siena/eeg-spectral-raw-bids/`).
 
 
 ## Limitations
