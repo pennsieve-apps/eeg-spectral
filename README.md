@@ -216,8 +216,8 @@ Outputs on the demo data are in `workflow-scalp-eeg/data/work/{siena,chbmit,ds00
 
 Our code: Apache-2.0 (`LICENSE`). Bundled components and their licences: `THIRD_PARTY.md`
 (fooof Apache-2.0, MNE-Python BSD-3-Clause, NumPy/SciPy BSD-3-Clause, Matplotlib PSF-based; all
-permissive). The demo databases are not bundled: Siena CC BY 4.0 (BIDS conversion; PhysioNet
-original ODC-By 1.0), CHB-MIT ODC-By 1.0, ds003555 CC0.
+permissive). The demo databases are not bundled: Siena CC BY 4.0 (the PhysioNet original and the Zenodo BIDS
+conversion; the conversion's `dataset_description.json` says ODC-By 1.0), CHB-MIT ODC-By 1.0, ds003555 CC0.
 
 ## Citations
 

@@ -80,6 +80,26 @@ references:
   authors:
   - family-names: Gramfort
     given-names: Alexandre
+  - family-names: Luessi
+    given-names: Martin
+  - family-names: Larson
+    given-names: Eric
+  - family-names: Engemann
+    given-names: Denis A.
+  - family-names: Strohmeier
+    given-names: Daniel
+  - family-names: Brodbeck
+    given-names: Christian
+  - family-names: Goj
+    given-names: Roman
+  - family-names: Jas
+    given-names: Mainak
+  - family-names: Brooks
+    given-names: Teon
+  - family-names: Parkkonen
+    given-names: Lauri
+  - family-names: Hämäläinen
+    given-names: Matti
   year: 2013
   journal: Frontiers in Neuroscience
   volume: 7
