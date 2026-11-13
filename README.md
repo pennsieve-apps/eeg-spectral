@@ -40,7 +40,7 @@ artifacts are left out, so the numbers describe interictal background.
 excitation/inhibition balance) and **oscillatory peaks** (centre frequency, power above the 1/f
 component, bandwidth). Everything is written in long tables keyed by `recording_id` and `channel`,
 plus the shared `features.csv` (`relpow_<band>`, `logpow_<band>`, `aperiodic_exponent`,
-`aperiodic_offset`, `pdr_hz`, `theta_alpha_ratio`, `bsi`) that the iEEG apps and a future
+`aperiodic_offset`, `alpha_peak_hz`, `theta_alpha_ratio`, `bsi`) that the iEEG apps and a future
 normative step read.
 
 ### Method
@@ -76,16 +76,35 @@ normative step read.
    are at least 5 windows of it, otherwise on all kept windows outside annotated sleep, with a
    warning (`PDR_WINDOWS=alpha-richest` uses the quarter of those windows with the most posterior
    6–14 Hz power instead). Left and right are fitted separately: `pdr_left_hz`, `pdr_right_hz`,
-   and the amplitude asymmetry (L − R)/(L + R). The amplitude is the peak-to-peak amplitude of a
-   sinusoid carrying the power the peak adds above the 1/f fit within ± its bandwidth. Reactivity,
-   when eyes-open and eyes-closed EEG are both annotated, is 1 − (power within ± 1 Hz of the PDR
-   with eyes open / with eyes closed): 0.5 means the PDR attenuates by half with eye opening.
-8. **Revised Brain Symmetry Index** (van Putten 2007): at each frequency bin, the mean power of
-   the right channels and of the left channels of the homologous pairs present, |R − L| / (R + L),
-   averaged over the bins of 1–25 Hz (`rbsi`, 0 = symmetric, 1 = one side silent) and over each
-   band's bins; per pair (Fp1/Fp2, F7/F8, …; on bipolar recordings Fp1-F7/Fp2-F8, …) the same
-   expression on the two channels. The `signed` column is the mean of (R − L)/(R + L): positive
-   means more power on the right, so lateralised left slowing gives a negative delta value.
+   and the amplitude asymmetry (L − R)/(L + R).
+   **Only a clear peak counts.** A peak must rise at least `PDR_MIN_PEAK` (0.2 log10, 1.6 times)
+   above specparam's 1/f fit **and** at least 0.1 log10 (26 %) above the spectrum 2 Hz either side
+   of it (a straight line in log-log coordinates through those two points). Otherwise `pdr_hz` is
+   empty and `method` says "no clear peak". Why two tests: specparam's peak height alone is not
+   enough, because on a curved spectrum without a rhythm a fixed-mode fit leaves a broad, hump
+   "peak" (Siena sub-00 run-01 had 12.8 Hz combined and 8.9/9.4 Hz on the sides, on a flat
+   posterior spectrum); the local test does not depend on the 1/f fit. The thresholds were set
+   from the demo data: on Siena the posterior peak heights split into a group at or below 0.17 log10
+   (no rhythm visible in the spectrum) and one at or above 0.31; the synthetic alpha is far above
+   both. When the combined, left and right estimates differ by more than 1 Hz, `method` starts a
+   `CHECK:` note and `summary.json` sets `pdr_estimates_disagree`: there is no single clear
+   rhythm, so read the figure.
+   The amplitude is the peak-to-peak amplitude of a sinusoid carrying the power the peak adds
+   above the 1/f fit within ± its bandwidth. Reactivity, when eyes-open and eyes-closed EEG are both
+   annotated, is 1 − (power within ± 1 Hz of the PDR with eyes open / with eyes closed): 0.5
+   means the PDR attenuates by half with eye opening.
+8. **Revised Brain Symmetry Index** (formula of van Putten 2007): at each frequency bin, the mean
+   power of the right channels and of the left channels of the homologous pairs present,
+   |R − L| / (R + L), averaged over the bins of 1–25 Hz (`rbsi`, 0 = symmetric, 1 = one side
+   silent) and over each band's bins; per pair (Fp1/Fp2, F7/F8, …; on bipolar recordings
+   Fp1-F7/Fp2-F8, …) the same expression on the two channels. The `signed` column is the mean of
+   (R − L)/(R + L): positive means more power on the right, so lateralised left slowing gives a
+   negative delta value. **Difference from the paper:** van Putten computes the index per epoch
+   and averages it over time; this app computes it once, on each channel's spectrum averaged over
+   the whole analysable recording. Averaging first removes the noise of single-epoch spectra
+   (per 4 s window, symmetric synthetic EEG gives about 0.2 instead of 0.06), so values are
+   lower and steadier than per-epoch rBSI, and **published rBSI thresholds (e.g. from stroke or
+   carotid surgery monitoring) do not apply**; compare recordings processed the same way.
 9. **Slowing ratios** per channel from the absolute band powers.
 
 ## Ports
@@ -108,6 +127,7 @@ normative step read.
 | `PEAK_WIDTH_LIMITS` | `1-8` | peak bandwidth limits (Hz) |
 | `MIN_R_SQUARED` | `0.9` | fits below are flagged |
 | `PDR_RANGE` | `6-14` | where the PDR peak is searched (Hz) |
+| `PDR_MIN_PEAK` | `0.2` | a PDR / alpha peak must rise this much (log10) above the 1/f fit; plus a fixed 0.1 log10 local prominence |
 | `PDR_WINDOWS` | `auto` | without eyes-closed annotations: `auto` = all artifact-free windows; `alpha-richest` = the quarter with most posterior 6–14 Hz power |
 | `EXCLUDE_SEIZURE` | `true` | leave annotated seizures out |
 | `SEIZURE_MARGIN_S` | `60` | seconds left out before and after each seizure |
@@ -130,7 +150,7 @@ normative step read.
 | `pdr.csv` | recording_id, pdr_hz, pdr_amplitude_uv, pdr_left_hz, pdr_right_hz, asymmetry, reactivity, n_eyes_closed_s, method |
 | `asymmetry.csv` | recording_id, pair (`T7/T8`, or `recording`), band (bands + `rbsi` 1–25 Hz), bsi, signed |
 | `slowing.csv` | recording_id, channel, theta_alpha_ratio, delta_theta_over_alpha_beta |
-| `features.csv` | recording_id, channel, feature, value (shared long shape; `bsi` is the channel's pair rBSI, empty on the midline) |
+| `features.csv` | recording_id, channel, feature, value (shared long shape; `alpha_peak_hz` is the channel's own clear 6–14 Hz peak, not the PDR, which is in `pdr.csv`; `bsi` is the channel's pair rBSI, empty on the midline) |
 | `windowed.csv` | recording_id, channel, window_start_s, feature, value (`WINDOWED=true`) |
 | `figures/<recording_id>_{psd,topomaps,pdr}.png` | spectrum per region with the 1/f fit; topomaps of relative alpha power and of the exponent; PDR left vs right |
 | `summary.json` | headline numbers per recording, the figures with captions (in order), tables, warnings |
@@ -146,40 +166,45 @@ Measured in Docker with **amd64 emulation on an M-series Mac** (so slower than o
 `eeg-spectral` 0.1.0 (135 MB compressed, 303 MB of Python packages). One recording at a time;
 almost all of the time is reading the EDF and the FFTs, single-threaded.
 
-| Input | Recordings | Wall time | Peak memory (cgroup) |
-|---|---|---|---|
-| Synthetic fixture (`make lambda-check`) | 2 (6 and 4 min) | 4.8 s | 204 MB |
-| eeg-prep's Siena derivative (`--cpus 2 --memory 2g`) | 41 runs, 0.5-13.5 h, 41 ok | 183 s | 933 MB |
-| eeg-prep's CHB-MIT chb01 derivative (bipolar) | 42 x 1 h, 42 ok | 110 s | 414 MB |
-| eeg-prep's ds003555 derivative (3 h sleep EEG, 1024 Hz) | 3, 3 ok | 31 s | 830 MB |
-| Raw BIDS Siena, all of it | 41 runs, 41 ok | 156-188 s | 835-898 MB |
-| Siena sub-01 run-00 alone, 13.5 h raw, Lambda-style (`--cpus 1`, read-only, uid 65534) | 1 | 16 s | 624 MB |
+| Input | Recordings | Wall time | Peak memory (cgroup) | Log |
+|---|---|---|---|---|
+| Synthetic fixture (`make lambda-check`) | 2 (6 and 4 min) | 4.8 s | 204 MB | (rerun with `make lambda-check`) |
+| eeg-prep's Siena derivative (`--cpus 2 --memory 2g`) | 41 runs, 0.5-13.5 h, 41 ok | 155 s | 896 MB | `measurements/siena-eeg-prep.log` |
+| eeg-prep's CHB-MIT chb01 derivative (bipolar) | 42 x 1 h, 42 ok | 113 s | 459 MB | `measurements/chbmit-eeg-prep.log` |
+| eeg-prep's ds003555 derivative (3 h sleep EEG, 1024 Hz) | 3, 3 ok | 25 s | 848 MB | `measurements/ds003555-eeg-prep.log` |
+| Raw BIDS Siena (before eeg-prep) | 41 runs, 41 ok | 125 s | 824 MB | `measurements/siena-raw-bids.log` |
+| eeg-prep's Siena sub-01 run-00 alone, 13.5 h, Lambda-style (`--cpus 1`, read-only, uid 65534) | 1 | 11.6 s | 567 MB | `measurements/siena-sub-01-run-00-lambda-style.log` |
 
 The cgroup peak includes the page cache of the EDF being read; per-window spectra above 256 MB
 (recordings longer than about 10 h at 19 channels) go to a memory-mapped file in `$TMPDIR`. The
-app is sized at **1 vCPU, 2 GB, 900 s**, within the Lambda limits: a 24 h, 25-channel recording is
-estimated at under a minute.
+app is sized at **1 vCPU, 2 GB, 900 s**, within the Lambda limits. Not measured, an
+**estimate**: a 24 h, 25-channel, 256 Hz recording should take under a minute (time grows with
+samples x channels; 13.5 h x 19 channels took 11.6 s on 1 emulated vCPU), and at 512 Hz about
+twice that.
 
 What it found on eeg-prep's derivatives (the workflow's input):
 
 - **Siena** (adults with focal epilepsy, seizure-monitoring recordings, no eyes-closed
-  annotations): a PDR peak in 37 of 41 runs, median 8.8 Hz (6.2-13.1 Hz; values above 12 Hz are
-  sleep spindles in recordings made largely asleep, see Limitations); recording rBSI median
-  0.085 (0.035-0.32); median aperiodic exponent per run 1.02 (0.46-2.03), lower than on the raw
-  files (1.34) after eeg-prep's filtering and ICA; 1.2 % of windows rejected in the median run
-  (16 % at most), since eeg-prep had already marked the technical artifacts.
-- **CHB-MIT chb01** (bipolar only, 42 hours): a PDR peak in 26 of 42 (median 11.3 Hz, 7.9-13.4;
-  many hours are sleep); rBSI median 0.10; exponent median 1.92; 19 % of windows rejected in the
-  median hour (the automatic amplitude/muscle rules on top of eeg-prep).
-- **ds003555** (children, sleep EEG): PDR peaks in 2 of 3 (8.4 and 10.2 Hz); exponents 1.9-2.8.
+  annotations): a clear PDR in 25 of 41 runs, median 8.4 Hz (6.2-11.4 Hz), 6 of them flagged
+  because the combined and per-side estimates differ by more than 1 Hz; no clear peak in 16 (much
+  of these recordings is sleep or drowsiness); recording rBSI median 0.085 (0.035-0.32); median
+  aperiodic exponent per run 1.02 (0.46-2.03), lower than on the raw files (1.35) after
+  eeg-prep's filtering and ICA; 1.2 % of windows rejected in the median run (16 % at most), since
+  eeg-prep had already marked the technical artifacts.
+- **CHB-MIT chb01** (bipolar only, 42 hours, child): a clear 6-14 Hz posterior peak in 13 of 42
+  hours, 11.7-13.4 Hz, i.e. most likely sleep spindles rather than a waking PDR (no state
+  annotations; see Limitations); rBSI median 0.10; exponent median 1.92; 20 % of windows rejected
+  in the median hour.
+- **ds003555** (children, sleep EEG): no clear PDR in any of the 3, as expected for sleep;
+  exponents 1.9-2.8.
 
-On the raw BIDS Siena files (before eeg-prep): PDR in 34 of 41 (median 8.8 Hz), rBSI median
-0.057, exponent median 1.34, 6 % of windows rejected in the median run (45 % in the worst, raw
-clinical data with 5 mV artifacts). The side of the delta-band asymmetry (`signed`) matched the
+On the raw BIDS Siena files (before eeg-prep): a clear PDR in 23 of 41 (median 8.2 Hz), rBSI
+median 0.057, exponent median 1.35. The side of the delta-band asymmetry (`signed`) matched the
 side of the electrodes in the seizure annotations in 9 of 13 patients with one-sided annotations
 (exploratory; small asymmetries, no clinical claim). On the raw CHB-MIT EDFs the reversed
 duplicate pair `P7-T7` and the `T8-P8-1` copy are left out; ds003555's EDFs carry no physical
 dimension and are read as µV (noted per recording).
+
 - **Synthetic fixture**: planted 9.5 Hz alpha recovered at 9.51 Hz (referential) and 9.50 Hz
   (bipolar); planted exponent 1.5 recovered at 1.499 and 1.501 (median over channels); planted
   left-weaker alpha gives asymmetry -0.26; planted eyes-open attenuation gives reactivity 0.95;
@@ -195,7 +220,7 @@ Outputs on the demo data are in `workflow-scalp-eeg/data/work/{siena,chbmit,ds00
   recordings without annotated eyes-closed wakefulness (most long-term monitoring) it is computed
   over whatever state the patient was in, and drowsiness, sleep spindles (12–14 Hz) or a
   posterior theta can be reported instead; `method` and the warnings say which EEG was used. A
-  missing PDR (`pdr_hz` empty) means no peak was found in 6–14 Hz, not that the rhythm is absent.
+  missing PDR (`pdr_hz` empty) means no clear peak in 6–14 Hz in the EEG used, not that the rhythm is absent.
 - Long recordings are averaged over wake and sleep; band powers and slowing ratios of a 12-hour
   recording are not those of a routine waking EEG. Use `WINDOWED=true` for the time course, or a
   hypnogram-aware analysis.
@@ -209,6 +234,8 @@ Outputs on the demo data are in `workflow-scalp-eeg/data/work/{siena,chbmit,ds00
 - The PDR method follows Lodder & van Putten 2011 and Zibrandtsen & Kjaer 2021 in spirit (a peak
   frequency of the posterior spectrum); it is not their software, and it has been checked here on
   synthetic data with known values and on the demo databases, not against clinical reads.
+- rBSI here is computed on whole-recording averaged spectra, not per epoch as in van Putten 2007
+  (Method, step 8): published rBSI thresholds do not apply.
 - The aperiodic exponent depends on the fit range; with a 1–45 Hz fixed-mode fit it is comparable
   only to exponents computed the same way.
 

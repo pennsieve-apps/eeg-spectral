@@ -1,0 +1,6 @@
+# 13.5 h eeg-prep recording; docker run --rm --platform linux/amd64 --cpus 1 --memory 2g --read-only --user 65534:65534 --tmpfs /tmp:mode=1777 -e HOME=/tmp/w/home -e TMPDIR=/tmp/w/tmp -e INPUT_DIR=/tmp/s/input -e OUTPUT_DIR=/tmp/s/output ... eeg-spectral:dev (amd64 emulation, M-series Mac, 2026-11-13T16:42:37Z)
+2026-11-13 16:42:38,481 - INFO - eeg-spectral 0.1.0: INPUT_DIR=/tmp/s/input OUTPUT_DIR=/tmp/s/output/eeg-spectral threads=1 (THREADS=0: 1 CPU(s) (cgroup CPU quota 1); cgroup memory limit 2048 MB fits 4 at ~300 MB each + 700 MB)
+2026-11-13 16:42:38,500 - INFO - 1 recording(s) found
+2026-11-13 16:42:38,502 - INFO - [1/1] sub-01_ses-01_task-szMonitoring_run-00 (sub-01_ses-01_task-szMonitoring_run-00_desc-preproc_eeg.edf)
+2026-11-13 16:42:50,000 - INFO - sub-01_ses-01_task-szMonitoring_run-00: 19 EEG channels (average) of 19, 256 Hz, 43416 s of 48557 s analysed (20164 windows, 143 rejected), PDR 8.03 Hz, rBSI 0.32, exponent 1.488, 11.5s
+2026-11-13 16:42:50,049 - INFO - 1 of 1 recording(s) done in 11.6s, peak memory 567 MB; wrote /tmp/s/output/eeg-spectral

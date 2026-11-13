@@ -87,6 +87,8 @@ MIN_SFREQ = 100.0
 MIN_PDR_WINDOWS = 5          # eyes-closed windows needed before they are used for the PDR (~12 s)
 PDR_TOP_FRACTION = 0.25      # PDR_WINDOWS=alpha-richest without eyes-closed annotation: the alpha-richest quarter
 PDR_MODES = ("auto", "alpha-richest")
+PDR_MIN_PROMINENCE = 0.1     # and >= 0.1 log10 (26 %) above the spectrum 2 Hz either side (local prominence)
+PDR_DISAGREE_HZ = 1.0        # combined vs left vs right PDR estimates further apart than this are flagged
 
 CITATIONS = ["10.1038/s41593-020-00744-x", "10.1016/j.jneumeth.2011.06.008", "10.1016/j.cnp.2020.11.001",
              "10.1016/j.clinph.2007.07.019", "10.3389/fnins.2013.00267"]
@@ -94,7 +96,7 @@ CITATIONS = ["10.1038/s41593-020-00744-x", "10.1016/j.jneumeth.2011.06.008", "10
 DEFAULTS = {
     "BANDS": "conventions", "WELCH_WINDOW_S": "4", "WELCH_OVERLAP": "0.5", "FIT_RANGE": "1-45",
     "APERIODIC_MODE": "fixed", "MAX_N_PEAKS": "6", "PEAK_WIDTH_LIMITS": "1-8", "MIN_R_SQUARED": "0.9",
-    "PDR_RANGE": "6-14", "PDR_WINDOWS": "auto", "EXCLUDE_SEIZURE": "true", "SEIZURE_MARGIN_S": "60", "REJECT": "true",
+    "PDR_RANGE": "6-14", "PDR_WINDOWS": "auto", "PDR_MIN_PEAK": "0.2", "EXCLUDE_SEIZURE": "true", "SEIZURE_MARGIN_S": "60", "REJECT": "true",
     "REJECT_UV": "500", "WINDOWED": "false", "WINDOWED_S": "60", "FIGURES": "true", "CHUNK_S": "60",
     "THREADS": "0", "LABEL": "",
 }
@@ -153,7 +155,10 @@ def read_params(env=os.environ) -> tuple[dict, S.Params, dict]:
         raise ValueError(str(e)) from None
     other = {"exclude_seizure": _bool("EXCLUDE_SEIZURE", raw["EXCLUDE_SEIZURE"]),
              "margin_s": float(raw["SEIZURE_MARGIN_S"]), "figures": _bool("FIGURES", raw["FIGURES"]),
-             "label": raw["LABEL"].strip(), "pdr_windows": raw["PDR_WINDOWS"].strip().lower()}
+             "label": raw["LABEL"].strip(), "pdr_windows": raw["PDR_WINDOWS"].strip().lower(),
+             "pdr_min_peak": float(raw["PDR_MIN_PEAK"])}
+    if other["pdr_min_peak"] < 0:
+        raise ValueError("PDR_MIN_PEAK must be >= 0")
     if other["pdr_windows"] not in PDR_MODES:
         raise ValueError(f"PDR_WINDOWS must be one of {', '.join(PDR_MODES)}")
     if other["margin_s"] < 0:
@@ -380,21 +385,24 @@ def _analyse(rec, raw, win, p: S.Params, other, out: Path, writers, names, conta
                                        fmt(fit.error), len(fit.peaks) if fit.ok else "", flag])
         for cf, pw, bw in fit.peaks:
             writers["peaks"].writerow([rid, ch, fmt(cf), fmt(pw), fmt(bw)])
-        pk = S.strongest_peak(fit, *p.pdr_range)
+        pk = S.clear_peak(fit, freqs, psd_all[c], *p.pdr_range, other["pdr_min_peak"], PDR_MIN_PROMINENCE)
         if pk is not None:
             alpha_peak[c] = pk[0]
     if low_fit:
         notes.append(f"specparam r_squared < {p.min_r_squared:g} on {len(low_fit)} channel(s): {', '.join(low_fit)}")
 
     # posterior dominant rhythm
-    pdr = posterior_dominant_rhythm(rec, win, p, ok, ch_names, contacts, freqs, bipolar, other["pdr_windows"])
+    pdr = posterior_dominant_rhythm(rec, win, p, ok, ch_names, contacts, freqs, bipolar, other["pdr_windows"],
+                                    other["pdr_min_peak"])
     writers["pdr"].writerow([rid, fmt(pdr["pdr_hz"], 4), fmt(pdr["amplitude"], 4), fmt(pdr["left_hz"], 4),
                              fmt(pdr["right_hz"], 4), fmt(pdr["asymmetry"], 4), fmt(pdr["reactivity"], 4),
                              fmt(pdr["ec_s"], 6), pdr["method"]])
     if pdr["note"]:
         notes.append(pdr["note"])
 
-    # revised brain symmetry index
+    # revised brain symmetry index, on the recording's averaged spectra (not per epoch as in
+    # van Putten 2007: 4 s single-window spectra are noisy enough that a per-window index of
+    # symmetric EEG sits around 0.2, see README)
     pairs = C.homologous_pairs(ch_names, contacts)
     pos = {ch: i for i, ch in enumerate(ch_names)}
     bands = S.asymmetry_bands(p)
@@ -402,18 +410,18 @@ def _analyse(rec, raw, win, p: S.Params, other, out: Path, writers, names, conta
     rbsi = math.nan
     for left, right in pairs:
         for band, lo, hi in bands:
-            u, s = S.bsi(psd_all[pos[right]], psd_all[pos[left]], freqs, lo, hi)
-            writers["asymmetry"].writerow([rid, f"{left}/{right}", band, fmt(u), fmt(s)])
+            u, sg = S.bsi(psd_all[pos[right]], psd_all[pos[left]], freqs, lo, hi)
+            writers["asymmetry"].writerow([rid, f"{left}/{right}", band, fmt(u), fmt(sg)])
             if band == "rbsi":
                 pair_bsi[left] = pair_bsi[right] = u
     if pairs:
         rmean = psd_all[[pos[r] for _, r in pairs]].mean(axis=0)
         lmean = psd_all[[pos[l_] for l_, _ in pairs]].mean(axis=0)
         for band, lo, hi in bands:
-            u, s = S.bsi(rmean, lmean, freqs, lo, hi)
-            writers["asymmetry"].writerow([rid, "recording", band, fmt(u), fmt(s)])
+            u, sg = S.bsi(rmean, lmean, freqs, lo, hi)
+            writers["asymmetry"].writerow([rid, "recording", band, fmt(u), fmt(sg)])
             if band == "rbsi":
-                rbsi, rbsi_signed = u, s
+                rbsi, rbsi_signed = u, sg
     else:
         rbsi_signed = math.nan
         notes.append("no homologous left/right channel pair: no asymmetry index")
@@ -427,7 +435,7 @@ def _analyse(rec, raw, win, p: S.Params, other, out: Path, writers, names, conta
         feats.append((f"logpow_{band}", bt.log_power[:, b]))
     feats.append(("aperiodic_exponent", np.array([f.exponent for f in fits])))
     feats.append(("aperiodic_offset", np.array([f.offset for f in fits])))
-    feats.append(("pdr_hz", alpha_peak))
+    feats.append(("alpha_peak_hz", alpha_peak))
     feats.append(("theta_alpha_ratio", ta))
     feats.append(("bsi", np.array([pair_bsi.get(ch, np.nan) for ch in ch_names])))
     for fname, vals in feats:
@@ -457,7 +465,7 @@ def _analyse(rec, raw, win, p: S.Params, other, out: Path, writers, names, conta
         "channel_windows_rejected": int(rinfo.get("rejected_channel_windows", 0)),
         "pdr_hz": num(pdr["pdr_hz"], 2), "pdr_amplitude_uv": num(pdr["amplitude"], 1),
         "pdr_asymmetry": num(pdr["asymmetry"], 3), "pdr_reactivity": num(pdr["reactivity"], 3),
-        "pdr_basis": pdr["basis"],
+        "pdr_basis": pdr["basis"], "pdr_estimates_disagree": bool(pdr.get("disagree", False)),
         "rbsi": num(rbsi, 4), "rbsi_signed": num(rbsi_signed, 4),
         "aperiodic_exponent_median": num(np.median(exps), 3) if len(exps) else None,
         "theta_alpha_ratio_median": num(np.nanmedian(ta), 3) if np.isfinite(ta).any() else None,
@@ -477,7 +485,8 @@ def _analyse(rec, raw, win, p: S.Params, other, out: Path, writers, names, conta
             "notes": notes + rec.notes, "_headline": headline, "_figures": figs}
 
 
-def posterior_dominant_rhythm(rec, win, p: S.Params, ok, ch_names, contacts, freqs, bipolar, pdr_windows) -> dict:
+def posterior_dominant_rhythm(rec, win, p: S.Params, ok, ch_names, contacts, freqs, bipolar, pdr_windows,
+                              pdr_min: float) -> dict:
     out = {"pdr_hz": math.nan, "amplitude": math.nan, "left_hz": math.nan, "right_hz": math.nan,
            "asymmetry": math.nan, "reactivity": math.nan, "ec_s": 0.0, "method": "", "note": "", "basis": "",
            "sides": {}}
@@ -522,7 +531,7 @@ def posterior_dominant_rhythm(rec, win, p: S.Params, ok, ch_names, contacts, fre
     spec = S.mean_psd(win, mask)[ok]
     combined = spec[[col[s] for s in sides]].mean(axis=0)
     fit = S.fit_spectrum(freqs, combined, p)
-    pk = S.strongest_peak(fit, *p.pdr_range)
+    pk = S.clear_peak(fit, freqs, combined, *p.pdr_range, pdr_min, PDR_MIN_PROMINENCE)
     if pk is not None:
         out["pdr_hz"] = float(pk[0])
         out["amplitude"] = S.peak_amplitude_uv(freqs, combined, fit, pk)
@@ -531,7 +540,7 @@ def posterior_dominant_rhythm(rec, win, p: S.Params, ok, ch_names, contacts, fre
         if not ch:
             continue
         f = S.fit_spectrum(freqs, spec[col[ch]], p)
-        pks = S.strongest_peak(f, *p.pdr_range)
+        pks = S.clear_peak(f, freqs, spec[col[ch]], *p.pdr_range, pdr_min, PDR_MIN_PROMINENCE)
         hz = float(pks[0]) if pks is not None else math.nan
         amp = S.peak_amplitude_uv(freqs, spec[col[ch]], f, pks) if pks is not None else math.nan
         out[f"{side}_hz"] = hz
@@ -550,8 +559,18 @@ def posterior_dominant_rhythm(rec, win, p: S.Params, ok, ch_names, contacts, fre
         if p_ec > 0:
             out["reactivity"] = float(1 - p_eo / p_ec)
     chans = "/".join(sides)
-    out["method"] = (f"specparam peak {p.pdr_range[0]:g}-{p.pdr_range[1]:g} Hz, {chans}, {basis}"
-                     + ("" if pk is not None else "; no peak found"))
+    out["method"] = (f"specparam peak {p.pdr_range[0]:g}-{p.pdr_range[1]:g} Hz at least {pdr_min:g} log10 "
+                     f"above the 1/f fit and {PDR_MIN_PROMINENCE:g} above its surroundings, {chans}, {basis}"
+                     + ("" if pk is not None else "; no clear peak"))
+    side_hz = [out[f"{s_}_hz"] for s_ in ("left", "right") if math.isfinite(out[f"{s_}_hz"])]
+    vals = side_hz + ([out["pdr_hz"]] if math.isfinite(out["pdr_hz"]) else [])
+    if len(vals) >= 2 and max(vals) - min(vals) > PDR_DISAGREE_HZ:
+        detail = (f"combined {fmt(out['pdr_hz'], 3) or 'none'} Hz, left {fmt(out['left_hz'], 3) or 'none'} Hz, "
+                  f"right {fmt(out['right_hz'], 3) or 'none'} Hz")
+        out["method"] += f"; CHECK: estimates differ by more than {PDR_DISAGREE_HZ:g} Hz ({detail})"
+        out["note"] = ((out["note"] + "; ") if out["note"] else "") + \
+            f"PDR estimates differ by more than {PDR_DISAGREE_HZ:g} Hz ({detail}): no single clear rhythm; review"
+    out["disagree"] = len(vals) >= 2 and max(vals) - min(vals) > PDR_DISAGREE_HZ
     return out
 
 

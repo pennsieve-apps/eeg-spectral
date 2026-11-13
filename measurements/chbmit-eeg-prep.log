@@ -1,0 +1,88 @@
+# docker run --rm --platform linux/amd64 --cpus 2 --memory 2g --env-file dev.env -v data/work/chbmit/eeg-prep/eeg:/data/input:ro -v data/work/chbmit/eeg-spectral:/data/output eeg-spectral:dev  (amd64 emulation, M-series Mac, 2026-11-13T16:40:07Z)
+2026-11-13 16:40:08,138 - INFO - eeg-spectral 0.1.0: INPUT_DIR=/data/input OUTPUT_DIR=/data/output/eeg-spectral threads=2 (THREADS=0: 2 CPU(s) (cgroup CPU quota 2); cgroup memory limit 2048 MB fits 4 at ~300 MB each + 700 MB)
+2026-11-13 16:40:08,285 - INFO - 42 recording(s) found
+2026-11-13 16:40:08,291 - INFO - [1/42] sub-chb01_task-eeg_run-01 (sub-chb01/eeg/sub-chb01_task-eeg_run-01_desc-preproc_eeg.edf)
+2026-11-13 16:40:12,465 - INFO - sub-chb01_task-eeg_run-01: 21 EEG channels (bipolar-longitudinal) of 21, 256 Hz, 2390 s of 3600 s analysed (970 windows, 482 rejected), PDR  Hz, rBSI 0.0542, exponent 1.273, 4.1s
+2026-11-13 16:40:12,472 - INFO - [2/42] sub-chb01_task-eeg_run-02 (sub-chb01/eeg/sub-chb01_task-eeg_run-02_desc-preproc_eeg.edf)
+2026-11-13 16:40:14,720 - INFO - sub-chb01_task-eeg_run-02: 21 EEG channels (bipolar-longitudinal) of 21, 256 Hz, 3224 s of 3600 s analysed (1509 windows, 148 rejected), PDR  Hz, rBSI 0.0693, exponent 1.646, 2.2s
+2026-11-13 16:40:14,721 - INFO - [3/42] sub-chb01_task-eeg_run-03 (sub-chb01/eeg/sub-chb01_task-eeg_run-03_desc-preproc_eeg.edf)
+2026-11-13 16:40:18,023 - INFO - sub-chb01_task-eeg_run-03: 21 EEG channels (bipolar-longitudinal) of 21, 256 Hz, 2874 s of 3600 s analysed (1411 windows, 275 rejected), PDR  Hz, rBSI 0.117, exponent 2.813, 3.3s
+2026-11-13 16:40:18,024 - INFO - [4/42] sub-chb01_task-eeg_run-04 (sub-chb01/eeg/sub-chb01_task-eeg_run-04_desc-preproc_eeg.edf)
+2026-11-13 16:40:22,123 - INFO - sub-chb01_task-eeg_run-04: 21 EEG channels (bipolar-longitudinal) of 21, 256 Hz, 3206 s of 3600 s analysed (1547 windows, 48 rejected), PDR  Hz, rBSI 0.116, exponent 2.368, 4.1s
+2026-11-13 16:40:22,125 - INFO - [5/42] sub-chb01_task-eeg_run-05 (sub-chb01/eeg/sub-chb01_task-eeg_run-05_desc-preproc_eeg.edf)
+2026-11-13 16:40:23,912 - INFO - sub-chb01_task-eeg_run-05: 21 EEG channels (bipolar-longitudinal) of 21, 256 Hz, 2152 s of 3600 s analysed (862 windows, 579 rejected), PDR  Hz, rBSI 0.0575, exponent 1.57, 1.8s
+2026-11-13 16:40:23,914 - INFO - [6/42] sub-chb01_task-eeg_run-06 (sub-chb01/eeg/sub-chb01_task-eeg_run-06_desc-preproc_eeg.edf)
+2026-11-13 16:40:26,180 - INFO - sub-chb01_task-eeg_run-06: 19 EEG channels (bipolar-longitudinal) of 21, 256 Hz, 2356 s of 3600 s analysed (965 windows, 509 rejected), PDR  Hz, rBSI 0.0651, exponent 1.397, 2.3s
+2026-11-13 16:40:26,181 - INFO - [7/42] sub-chb01_task-eeg_run-07 (sub-chb01/eeg/sub-chb01_task-eeg_run-07_desc-preproc_eeg.edf)
+2026-11-13 16:40:31,573 - INFO - sub-chb01_task-eeg_run-07: 21 EEG channels (bipolar-longitudinal) of 21, 256 Hz, 2364 s of 3600 s analysed (968 windows, 473 rejected), PDR  Hz, rBSI 0.0304, exponent 1.346, 5.4s
+2026-11-13 16:40:31,576 - INFO - [8/42] sub-chb01_task-eeg_run-08 (sub-chb01/eeg/sub-chb01_task-eeg_run-08_desc-preproc_eeg.edf)
+2026-11-13 16:40:34,029 - INFO - sub-chb01_task-eeg_run-08: 21 EEG channels (bipolar-longitudinal) of 21, 256 Hz, 2884 s of 3600 s analysed (1263 windows, 318 rejected), PDR  Hz, rBSI 0.0475, exponent 1.505, 2.5s
+2026-11-13 16:40:34,031 - INFO - [9/42] sub-chb01_task-eeg_run-09 (sub-chb01/eeg/sub-chb01_task-eeg_run-09_desc-preproc_eeg.edf)
+2026-11-13 16:40:38,324 - INFO - sub-chb01_task-eeg_run-09: 21 EEG channels (bipolar-longitudinal) of 21, 256 Hz, 2278 s of 3600 s analysed (928 windows, 600 rejected), PDR  Hz, rBSI 0.0655, exponent 1.21, 4.3s
+2026-11-13 16:40:38,326 - INFO - [10/42] sub-chb01_task-eeg_run-10 (sub-chb01/eeg/sub-chb01_task-eeg_run-10_desc-preproc_eeg.edf)
+2026-11-13 16:40:40,469 - INFO - sub-chb01_task-eeg_run-10: 21 EEG channels (bipolar-longitudinal) of 21, 256 Hz, 2592 s of 3600 s analysed (1113 windows, 438 rejected), PDR  Hz, rBSI 0.0697, exponent 1.497, 2.1s
+2026-11-13 16:40:40,471 - INFO - [11/42] sub-chb01_task-eeg_run-11 (sub-chb01/eeg/sub-chb01_task-eeg_run-11_desc-preproc_eeg.edf)
+2026-11-13 16:40:42,518 - INFO - sub-chb01_task-eeg_run-11: 21 EEG channels (bipolar-longitudinal) of 21, 256 Hz, 2506 s of 3600 s analysed (1030 windows, 560 rejected), PDR 12 Hz, rBSI 0.0771, exponent 1.113, 2.0s
+2026-11-13 16:40:42,519 - INFO - [12/42] sub-chb01_task-eeg_run-12 (sub-chb01/eeg/sub-chb01_task-eeg_run-12_desc-preproc_eeg.edf)
+2026-11-13 16:40:45,437 - INFO - sub-chb01_task-eeg_run-12: 21 EEG channels (bipolar-longitudinal) of 21, 256 Hz, 2350 s of 3600 s analysed (960 windows, 596 rejected), PDR  Hz, rBSI 0.0789, exponent 1.301, 2.9s
+2026-11-13 16:40:45,438 - INFO - [13/42] sub-chb01_task-eeg_run-13 (sub-chb01/eeg/sub-chb01_task-eeg_run-13_desc-preproc_eeg.edf)
+2026-11-13 16:40:47,409 - INFO - sub-chb01_task-eeg_run-13: 21 EEG channels (bipolar-longitudinal) of 21, 256 Hz, 2892 s of 3600 s analysed (1274 windows, 335 rejected), PDR 12 Hz, rBSI 0.0769, exponent 1.408, 2.0s
+2026-11-13 16:40:47,410 - INFO - [14/42] sub-chb01_task-eeg_run-14 (sub-chb01/eeg/sub-chb01_task-eeg_run-14_desc-preproc_eeg.edf)
+2026-11-13 16:40:49,395 - INFO - sub-chb01_task-eeg_run-14: 21 EEG channels (bipolar-longitudinal) of 21, 256 Hz, 3316 s of 3600 s analysed (1568 windows, 121 rejected), PDR  Hz, rBSI 0.116, exponent 2.253, 2.0s
+2026-11-13 16:40:49,396 - INFO - [15/42] sub-chb01_task-eeg_run-15 (sub-chb01/eeg/sub-chb01_task-eeg_run-15_desc-preproc_eeg.edf)
+2026-11-13 16:40:51,107 - INFO - sub-chb01_task-eeg_run-15: 19 EEG channels (bipolar-longitudinal) of 21, 256 Hz, 3208 s of 3600 s analysed (1527 windows, 140 rejected), PDR  Hz, rBSI 0.0757, exponent 3.03, 1.7s
+2026-11-13 16:40:51,107 - INFO - [16/42] sub-chb01_task-eeg_run-16 (sub-chb01/eeg/sub-chb01_task-eeg_run-16_desc-preproc_eeg.edf)
+2026-11-13 16:40:53,361 - INFO - sub-chb01_task-eeg_run-16: 21 EEG channels (bipolar-longitudinal) of 21, 256 Hz, 3206 s of 3600 s analysed (1545 windows, 140 rejected), PDR  Hz, rBSI 0.0745, exponent 2.955, 2.3s
+2026-11-13 16:40:53,362 - INFO - [17/42] sub-chb01_task-eeg_run-17 (sub-chb01/eeg/sub-chb01_task-eeg_run-17_desc-preproc_eeg.edf)
+2026-11-13 16:40:55,637 - INFO - sub-chb01_task-eeg_run-17: 21 EEG channels (bipolar-longitudinal) of 21, 256 Hz, 3360 s of 3600 s analysed (1610 windows, 140 rejected), PDR  Hz, rBSI 0.0687, exponent 3.074, 2.3s
+2026-11-13 16:40:55,640 - INFO - [18/42] sub-chb01_task-eeg_run-18 (sub-chb01/eeg/sub-chb01_task-eeg_run-18_desc-preproc_eeg.edf)
+2026-11-13 16:40:58,028 - INFO - sub-chb01_task-eeg_run-18: 21 EEG channels (bipolar-longitudinal) of 21, 256 Hz, 3182 s of 3600 s analysed (1548 windows, 58 rejected), PDR  Hz, rBSI 0.0992, exponent 2.381, 2.4s
+2026-11-13 16:40:58,029 - INFO - [19/42] sub-chb01_task-eeg_run-19 (sub-chb01/eeg/sub-chb01_task-eeg_run-19_desc-preproc_eeg.edf)
+2026-11-13 16:41:00,917 - INFO - sub-chb01_task-eeg_run-19: 19 EEG channels (bipolar-longitudinal) of 21, 256 Hz, 3352 s of 3600 s analysed (1625 windows, 94 rejected), PDR 11.7 Hz, rBSI 0.151, exponent 2.546, 2.9s
+2026-11-13 16:41:00,919 - INFO - [20/42] sub-chb01_task-eeg_run-20 (sub-chb01/eeg/sub-chb01_task-eeg_run-20_desc-preproc_eeg.edf)
+2026-11-13 16:41:05,288 - INFO - sub-chb01_task-eeg_run-20: 21 EEG channels (bipolar-longitudinal) of 21, 256 Hz, 2436 s of 2663 s analysed (1176 windows, 66 rejected), PDR  Hz, rBSI 0.167, exponent 2.355, 4.4s
+2026-11-13 16:41:05,289 - INFO - [21/42] sub-chb01_task-eeg_run-21 (sub-chb01/eeg/sub-chb01_task-eeg_run-21_desc-preproc_eeg.edf)
+2026-11-13 16:41:07,904 - INFO - sub-chb01_task-eeg_run-21: 21 EEG channels (bipolar-longitudinal) of 21, 256 Hz, 2654 s of 3600 s analysed (1249 windows, 308 rejected), PDR  Hz, rBSI 0.126, exponent 2.473, 2.6s
+2026-11-13 16:41:07,905 - INFO - [22/42] sub-chb01_task-eeg_run-22 (sub-chb01/eeg/sub-chb01_task-eeg_run-22_desc-preproc_eeg.edf)
+2026-11-13 16:41:10,594 - INFO - sub-chb01_task-eeg_run-22: 19 EEG channels (bipolar-longitudinal) of 21, 256 Hz, 2086 s of 3600 s analysed (849 windows, 609 rejected), PDR  Hz, rBSI 0.152, exponent 1.949, 2.7s
+2026-11-13 16:41:10,595 - INFO - [23/42] sub-chb01_task-eeg_run-23 (sub-chb01/eeg/sub-chb01_task-eeg_run-23_desc-preproc_eeg.edf)
+2026-11-13 16:41:13,327 - INFO - sub-chb01_task-eeg_run-23: 19 EEG channels (bipolar-longitudinal) of 21, 256 Hz, 2092 s of 3600 s analysed (808 windows, 647 rejected), PDR  Hz, rBSI 0.172, exponent 1.876, 2.7s
+2026-11-13 16:41:13,330 - INFO - [24/42] sub-chb01_task-eeg_run-24 (sub-chb01/eeg/sub-chb01_task-eeg_run-24_desc-preproc_eeg.edf)
+2026-11-13 16:41:15,691 - INFO - sub-chb01_task-eeg_run-24: 21 EEG channels (bipolar-longitudinal) of 21, 256 Hz, 2502 s of 3600 s analysed (1055 windows, 439 rejected), PDR  Hz, rBSI 0.115, exponent 1.654, 2.4s
+2026-11-13 16:41:15,692 - INFO - [25/42] sub-chb01_task-eeg_run-25 (sub-chb01/eeg/sub-chb01_task-eeg_run-25_desc-preproc_eeg.edf)
+2026-11-13 16:41:17,658 - INFO - sub-chb01_task-eeg_run-25: 21 EEG channels (bipolar-longitudinal) of 21, 256 Hz, 2366 s of 3600 s analysed (961 windows, 507 rejected), PDR  Hz, rBSI 0.101, exponent 1.481, 2.0s
+2026-11-13 16:41:17,660 - INFO - [26/42] sub-chb01_task-eeg_run-26 (sub-chb01/eeg/sub-chb01_task-eeg_run-26_desc-preproc_eeg.edf)
+2026-11-13 16:41:20,449 - INFO - sub-chb01_task-eeg_run-26: 21 EEG channels (bipolar-longitudinal) of 21, 256 Hz, 1872 s of 2325 s analysed (877 windows, 73 rejected), PDR 13.4 Hz, rBSI 0.0658, exponent 2.313, 2.8s
+2026-11-13 16:41:20,452 - INFO - [27/42] sub-chb01_task-eeg_run-27 (sub-chb01/eeg/sub-chb01_task-eeg_run-27_desc-preproc_eeg.edf)
+2026-11-13 16:41:24,361 - INFO - sub-chb01_task-eeg_run-27: 21 EEG channels (bipolar-longitudinal) of 21, 256 Hz, 422 s of 600 s analysed (204 windows, 46 rejected), PDR  Hz, rBSI 0.0917, exponent 2.47, 3.9s
+2026-11-13 16:41:24,362 - INFO - [28/42] sub-chb01_task-eeg_run-29 (sub-chb01/eeg/sub-chb01_task-eeg_run-29_desc-preproc_eeg.edf)
+2026-11-13 16:41:26,686 - INFO - sub-chb01_task-eeg_run-29: 21 EEG channels (bipolar-longitudinal) of 21, 256 Hz, 2172 s of 3600 s analysed (900 windows, 541 rejected), PDR  Hz, rBSI 0.0976, exponent 1.808, 2.3s
+2026-11-13 16:41:26,691 - INFO - [29/42] sub-chb01_task-eeg_run-30 (sub-chb01/eeg/sub-chb01_task-eeg_run-30_desc-preproc_eeg.edf)
+2026-11-13 16:41:28,539 - INFO - sub-chb01_task-eeg_run-30: 21 EEG channels (bipolar-longitudinal) of 21, 256 Hz, 2612 s of 3600 s analysed (1085 windows, 566 rejected), PDR  Hz, rBSI 0.0796, exponent 1.751, 1.8s
+2026-11-13 16:41:28,539 - INFO - [30/42] sub-chb01_task-eeg_run-31 (sub-chb01/eeg/sub-chb01_task-eeg_run-31_desc-preproc_eeg.edf)
+2026-11-13 16:41:30,349 - INFO - sub-chb01_task-eeg_run-31: 21 EEG channels (bipolar-longitudinal) of 21, 256 Hz, 2796 s of 3600 s analysed (1255 windows, 369 rejected), PDR  Hz, rBSI 0.124, exponent 1.891, 1.8s
+2026-11-13 16:41:30,350 - INFO - [31/42] sub-chb01_task-eeg_run-32 (sub-chb01/eeg/sub-chb01_task-eeg_run-32_desc-preproc_eeg.edf)
+2026-11-13 16:41:32,129 - INFO - sub-chb01_task-eeg_run-32: 21 EEG channels (bipolar-longitudinal) of 21, 256 Hz, 1752 s of 3600 s analysed (703 windows, 701 rejected), PDR 11.9 Hz, rBSI 0.126, exponent 1.554, 1.8s
+2026-11-13 16:41:32,130 - INFO - [32/42] sub-chb01_task-eeg_run-33 (sub-chb01/eeg/sub-chb01_task-eeg_run-33_desc-preproc_eeg.edf)
+2026-11-13 16:41:33,816 - INFO - sub-chb01_task-eeg_run-33: 21 EEG channels (bipolar-longitudinal) of 21, 256 Hz, 2766 s of 3600 s analysed (1212 windows, 403 rejected), PDR 12 Hz, rBSI 0.125, exponent 1.642, 1.7s
+2026-11-13 16:41:33,818 - INFO - [33/42] sub-chb01_task-eeg_run-34 (sub-chb01/eeg/sub-chb01_task-eeg_run-34_desc-preproc_eeg.edf)
+2026-11-13 16:41:35,900 - INFO - sub-chb01_task-eeg_run-34: 21 EEG channels (bipolar-longitudinal) of 21, 256 Hz, 2928 s of 3600 s analysed (1323 windows, 275 rejected), PDR 12 Hz, rBSI 0.126, exponent 1.59, 2.1s
+2026-11-13 16:41:35,902 - INFO - [34/42] sub-chb01_task-eeg_run-36 (sub-chb01/eeg/sub-chb01_task-eeg_run-36_desc-preproc_eeg.edf)
+2026-11-13 16:41:38,689 - INFO - sub-chb01_task-eeg_run-36: 19 EEG channels (bipolar-longitudinal) of 21, 256 Hz, 3296 s of 3600 s analysed (1558 windows, 175 rejected), PDR  Hz, rBSI 0.101, exponent 2.79, 2.8s
+2026-11-13 16:41:38,690 - INFO - [35/42] sub-chb01_task-eeg_run-37 (sub-chb01/eeg/sub-chb01_task-eeg_run-37_desc-preproc_eeg.edf)
+2026-11-13 16:41:40,780 - INFO - sub-chb01_task-eeg_run-37: 21 EEG channels (bipolar-longitudinal) of 21, 256 Hz, 3362 s of 3600 s analysed (1627 windows, 76 rejected), PDR  Hz, rBSI 0.11, exponent 2.55, 2.1s
+2026-11-13 16:41:40,782 - INFO - [36/42] sub-chb01_task-eeg_run-38 (sub-chb01/eeg/sub-chb01_task-eeg_run-38_desc-preproc_eeg.edf)
+2026-11-13 16:41:44,355 - INFO - sub-chb01_task-eeg_run-38: 21 EEG channels (bipolar-longitudinal) of 21, 256 Hz, 3424 s of 3600 s analysed (1641 windows, 136 rejected), PDR 12.3 Hz, rBSI 0.121, exponent 2.799, 3.6s
+2026-11-13 16:41:44,357 - INFO - [37/42] sub-chb01_task-eeg_run-39 (sub-chb01/eeg/sub-chb01_task-eeg_run-39_desc-preproc_eeg.edf)
+2026-11-13 16:41:46,591 - INFO - sub-chb01_task-eeg_run-39: 21 EEG channels (bipolar-longitudinal) of 21, 256 Hz, 3492 s of 3600 s analysed (1722 windows, 19 rejected), PDR 12.3 Hz, rBSI 0.137, exponent 2.266, 2.2s
+2026-11-13 16:41:46,593 - INFO - [38/42] sub-chb01_task-eeg_run-40 (sub-chb01/eeg/sub-chb01_task-eeg_run-40_desc-preproc_eeg.edf)
+2026-11-13 16:41:48,293 - INFO - sub-chb01_task-eeg_run-40: 21 EEG channels (bipolar-longitudinal) of 21, 256 Hz, 3460 s of 3600 s analysed (1703 windows, 30 rejected), PDR 12.1 Hz, rBSI 0.208, exponent 2.308, 1.7s
+2026-11-13 16:41:48,294 - INFO - [39/42] sub-chb01_task-eeg_run-41 (sub-chb01/eeg/sub-chb01_task-eeg_run-41_desc-preproc_eeg.edf)
+2026-11-13 16:41:49,987 - INFO - sub-chb01_task-eeg_run-41: 21 EEG channels (bipolar-longitudinal) of 21, 256 Hz, 3464 s of 3600 s analysed (1676 windows, 82 rejected), PDR 12.2 Hz, rBSI 0.189, exponent 2.283, 1.7s
+2026-11-13 16:41:49,988 - INFO - [40/42] sub-chb01_task-eeg_run-42 (sub-chb01/eeg/sub-chb01_task-eeg_run-42_desc-preproc_eeg.edf)
+2026-11-13 16:41:51,604 - INFO - sub-chb01_task-eeg_run-42: 21 EEG channels (bipolar-longitudinal) of 21, 256 Hz, 2558 s of 3600 s analysed (1193 windows, 416 rejected), PDR 12.2 Hz, rBSI 0.0937, exponent 2.074, 1.6s
+2026-11-13 16:41:51,605 - INFO - [41/42] sub-chb01_task-eeg_run-43 (sub-chb01/eeg/sub-chb01_task-eeg_run-43_desc-preproc_eeg.edf)
+2026-11-13 16:41:59,516 - INFO - sub-chb01_task-eeg_run-43: 18 EEG channels (bipolar-longitudinal) of 21, 256 Hz, 3428 s of 3600 s analysed (1668 windows, 46 rejected), PDR 13 Hz, rBSI 0.192, exponent 2.383, 7.9s
+2026-11-13 16:41:59,517 - INFO - [42/42] sub-chb01_task-eeg_run-46 (sub-chb01/eeg/sub-chb01_task-eeg_run-46_desc-preproc_eeg.edf)
+2026-11-13 16:42:01,292 - INFO - sub-chb01_task-eeg_run-46: 21 EEG channels (bipolar-longitudinal) of 21, 256 Hz, 2262 s of 3600 s analysed (973 windows, 414 rejected), PDR  Hz, rBSI 0.0957, exponent 1.482, 1.8s
+2026-11-13 16:42:01,321 - INFO - 42 of 42 recording(s) done in 113.2s, peak memory 459 MB; wrote /data/output/eeg-spectral

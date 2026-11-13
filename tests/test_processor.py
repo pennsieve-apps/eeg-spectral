@@ -143,13 +143,13 @@ def test_features_shape(derivative_out, truth):
     names = {r["feature"] for r in ft}
     expected = {f"relpow_{b}" for b in ("delta", "theta", "alpha", "beta", "gamma")} | \
         {f"logpow_{b}" for b in ("delta", "theta", "alpha", "beta", "gamma")} | \
-        {"aperiodic_exponent", "aperiodic_offset", "pdr_hz", "theta_alpha_ratio", "bsi"}
+        {"aperiodic_exponent", "aperiodic_offset", "alpha_peak_hz", "theta_alpha_ratio", "bsi"}
     assert names == expected
     rid = truth["SYN01"]["recording_id"]
     f = {(r["channel"], r["feature"]): r["value"] for r in by(ft, recording_id=rid)}
     assert f[("Fz", "bsi")] == ""                      # midline: no homologous channel
     assert f[("O1", "bsi")] == f[("O2", "bsi")] != ""
-    assert abs(float(f[("O2", "pdr_hz")]) - truth["alpha_hz"]) < 0.25
+    assert abs(float(f[("O2", "alpha_peak_hz")]) - truth["alpha_hz"]) < 0.25
 
 
 def test_windowed(derivative_out, truth):
@@ -227,7 +227,7 @@ def test_no_input_exit_1(tmp_path, monkeypatch):
 
 @pytest.mark.parametrize("env", [{"WELCH_OVERLAP": "1.5"}, {"BANDS": "{bad"}, {"FIT_RANGE": "45-1"},
                                  {"APERIODIC_MODE": "lorentz"}, {"REJECT": "maybe"}, {"THREADS": "x"},
-                                 {"PDR_WINDOWS": "sometimes"}])
+                                 {"PDR_WINDOWS": "sometimes"}, {"PDR_MIN_PEAK": "-1"}])
 def test_bad_parameters_exit_2(fixture, tmp_path, monkeypatch, env):
     assert run(monkeypatch, fixture / "loose", tmp_path, **env) == 2
 
@@ -342,3 +342,29 @@ def test_lowpass_claim_checked_against_spectrum(fixture, tmp_path, monkeypatch, 
     rec = json.loads((tmp_path / "out" / "eeg-spectral" / "provenance.json").read_text())["recordings"][
         truth["SYN02"]["recording_id"]]
     assert rec["fit_range_hz"] == [1.0, 45.0] and any("not seen in the spectrum" in n for n in rec["notes"])
+
+
+def test_no_pdr_on_a_spectrum_without_alpha(tmp_path, monkeypatch):
+    """1/f background only: no clear 6-14 Hz peak, so no PDR (and no per-channel alpha peak)."""
+    from edfio import Edf, EdfSignal
+
+    rng = np.random.default_rng(3)
+    el = make_fixture.electrodes(180.0, rng, delta=False, alpha_amp=0.0)
+    avg = np.mean(list(el.values()), axis=0)
+    inp = tmp_path / "in"
+    inp.mkdir()
+    Edf([EdfSignal(el[e] - avg, sampling_frequency=make_fixture.FS, label=e, physical_dimension="uV",
+                   physical_range=(-300, 300)) for e in make_fixture.ELECTRODES]).write(inp / "flat_01.edf")
+    assert run(monkeypatch, inp, tmp_path / "out", FIGURES="false") == 0
+    out = tmp_path / "out" / "eeg-spectral"
+    pdr = rows(out / "pdr.csv")[0]
+    assert pdr["pdr_hz"] == "" and pdr["pdr_left_hz"] == "" and "no clear peak" in pdr["method"]
+    ft = [r for r in rows(out / "features.csv") if r["feature"] == "alpha_peak_hz"]
+    assert sum(r["value"] != "" for r in ft) <= 1
+
+
+def test_strongest_peak_threshold():
+    fit = S.Fit(True, peaks=np.array([[9.0, 0.15, 2.0], [12.5, 0.12, 1.5], [20.0, 0.9, 3.0]]))
+    assert S.strongest_peak(fit, 6, 14)[0] == 9.0
+    assert S.strongest_peak(fit, 6, 14, min_power=0.2) is None
+

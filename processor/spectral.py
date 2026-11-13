@@ -278,8 +278,9 @@ def reject(win: Windows, params: Params) -> dict:
         for i in range(0, n_win, 2048):
             x = np.asarray(win.psd[i: i + 2048][:, ok][:, :, bb], dtype=np.float64).mean(axis=2)
             lp[i: i + 2048] = np.log10(np.maximum(np.median(x, axis=1), 1e-30))
-        med = np.median(lp[keep]) if keep.any() else np.median(lp)
-        mad = 1.4826 * np.median(np.abs(lp - med)) if keep.any() else 0.0
+        ref = lp[keep] if keep.any() else lp      # median and MAD over the same windows
+        med = np.median(ref)
+        mad = 1.4826 * np.median(np.abs(ref - med))
         if mad > 0:
             keep &= (lp - med) / mad <= ROBUST_Z
     else:
@@ -459,11 +460,45 @@ def fit_spectrum(freqs: np.ndarray, psd: np.ndarray, params: Params, fit_range: 
                np.asarray(fm.peak_params_, float).reshape(-1, 3), fm.freqs, np.asarray(fm._ap_fit), fr)
 
 
-def strongest_peak(fit: Fit, lo: float, hi: float) -> np.ndarray | None:
+def strongest_peak(fit: Fit, lo: float, hi: float, min_power: float = 0.0) -> np.ndarray | None:
+    """The peak in [lo, hi] Hz with the largest power above the aperiodic fit (log10), if that
+    power is at least min_power; else None."""
     if not fit.ok or len(fit.peaks) == 0:
         return None
-    p = fit.peaks[(fit.peaks[:, 0] >= lo) & (fit.peaks[:, 0] <= hi)]
+    p = fit.peaks[(fit.peaks[:, 0] >= lo) & (fit.peaks[:, 0] <= hi) & (fit.peaks[:, 1] >= min_power)]
     return p[np.argmax(p[:, 1])] if len(p) else None
+
+
+PROMINENCE_HALF_WIDTH_HZ = 2.0   # local prominence: the peak against the spectrum 2 Hz either side
+
+
+def local_prominence(freqs: np.ndarray, psd: np.ndarray, cf: float, half: float = PROMINENCE_HALF_WIDTH_HZ) -> float:
+    """How far (log10) the spectrum at cf (mean over cf +/- 0.5 Hz) rises above the straight line,
+    in log-log coordinates, through the spectrum at cf - half and cf + half Hz. A pure power law
+    gives 0, a visible rhythm clearly more; it does not depend on how well the aperiodic fit
+    matches a curved spectrum, which can leave a broad 'peak' where the trace shows none."""
+    def lp(f0: float) -> float:
+        m = (freqs >= f0 - 0.5) & (freqs <= f0 + 0.5)
+        return float(np.log10(max(np.mean(psd[m]), 1e-30))) if m.any() else math.nan
+    a, b = cf - half, cf + half
+    if a <= 0:
+        return math.nan
+    la, lb, lc = lp(a), lp(b), lp(cf)
+    t = (math.log10(cf) - math.log10(a)) / (math.log10(b) - math.log10(a))
+    return lc - (la + t * (lb - la))
+
+
+def clear_peak(fit: Fit, freqs: np.ndarray, psd: np.ndarray, lo: float, hi: float, min_power: float,
+               min_prominence: float) -> np.ndarray | None:
+    """The strongest specparam peak in [lo, hi] Hz that is at least min_power (log10) above the
+    aperiodic fit and at least min_prominence (log10) above its local surroundings; else None."""
+    if not fit.ok or len(fit.peaks) == 0:
+        return None
+    cand = fit.peaks[(fit.peaks[:, 0] >= lo) & (fit.peaks[:, 0] <= hi) & (fit.peaks[:, 1] >= min_power)]
+    for pk in cand[np.argsort(cand[:, 1])[::-1]]:
+        if local_prominence(freqs, psd, float(pk[0])) >= min_prominence:
+            return pk
+    return None
 
 
 def peak_amplitude_uv(freqs: np.ndarray, psd: np.ndarray, fit: Fit, peak: np.ndarray) -> float:

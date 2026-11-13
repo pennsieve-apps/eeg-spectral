@@ -1,0 +1,86 @@
+# docker run --rm --platform linux/amd64 --cpus 2 --memory 2g --env-file dev.env -v data/work/siena/eeg-prep/eeg:/data/input:ro -v data/work/siena/eeg-spectral:/data/output eeg-spectral:dev  (amd64 emulation, M-series Mac, 2026-11-13T16:37:31Z)
+2026-11-13 16:37:31,834 - INFO - eeg-spectral 0.1.0: INPUT_DIR=/data/input OUTPUT_DIR=/data/output/eeg-spectral threads=2 (THREADS=0: 2 CPU(s) (cgroup CPU quota 2); cgroup memory limit 2048 MB fits 4 at ~300 MB each + 700 MB)
+2026-11-13 16:37:32,073 - INFO - 41 recording(s) found
+2026-11-13 16:37:32,077 - INFO - [1/41] sub-00_ses-01_task-szMonitoring_run-00 (sub-00/ses-01/eeg/sub-00_ses-01_task-szMonitoring_run-00_desc-preproc_eeg.edf)
+2026-11-13 16:37:36,664 - INFO - sub-00_ses-01_task-szMonitoring_run-00: 19 EEG channels (average) of 19, 256 Hz, 2272 s of 2625 s analysed (1081 windows, 26 rejected), PDR  Hz, rBSI 0.0847, exponent 0.798, 4.5s
+2026-11-13 16:37:36,665 - INFO - [2/41] sub-00_ses-01_task-szMonitoring_run-01 (sub-00/ses-01/eeg/sub-00_ses-01_task-szMonitoring_run-01_desc-preproc_eeg.edf)
+2026-11-13 16:37:39,467 - INFO - sub-00_ses-01_task-szMonitoring_run-01: 19 EEG channels (average) of 19, 256 Hz, 2028 s of 2302 s analysed (993 windows, 0 rejected), PDR  Hz, rBSI 0.0851, exponent 1.93, 2.8s
+2026-11-13 16:37:39,468 - INFO - [3/41] sub-00_ses-01_task-szMonitoring_run-02 (sub-00/ses-01/eeg/sub-00_ses-01_task-szMonitoring_run-02_desc-preproc_eeg.edf)
+2026-11-13 16:37:41,137 - INFO - sub-00_ses-01_task-szMonitoring_run-02: 19 EEG channels (average) of 19, 256 Hz, 2012 s of 2509 s analysed (931 windows, 7 rejected), PDR  Hz, rBSI 0.106, exponent 0.646, 1.7s
+2026-11-13 16:37:41,138 - INFO - [4/41] sub-00_ses-01_task-szMonitoring_run-03 (sub-00/ses-01/eeg/sub-00_ses-01_task-szMonitoring_run-03_desc-preproc_eeg.edf)
+2026-11-13 16:37:42,700 - INFO - sub-00_ses-01_task-szMonitoring_run-03: 19 EEG channels (average) of 19, 256 Hz, 1788 s of 2102 s analysed (862 windows, 6 rejected), PDR  Hz, rBSI 0.0834, exponent 0.94, 1.6s
+2026-11-13 16:37:42,702 - INFO - [5/41] sub-00_ses-01_task-szMonitoring_run-04 (sub-00/ses-01/eeg/sub-00_ses-01_task-szMonitoring_run-04_desc-preproc_eeg.edf)
+2026-11-13 16:37:44,851 - INFO - sub-00_ses-01_task-szMonitoring_run-04: 18 EEG channels (average) of 19, 256 Hz, 1894 s of 2143 s analysed (932 windows, 0 rejected), PDR  Hz, rBSI 0.05, exponent 1.839, 2.1s
+2026-11-13 16:37:44,852 - INFO - [6/41] sub-01_ses-01_task-szMonitoring_run-00 (sub-01/ses-01/eeg/sub-01_ses-01_task-szMonitoring_run-00_desc-preproc_eeg.edf)
+2026-11-13 16:37:56,043 - INFO - sub-01_ses-01_task-szMonitoring_run-00: 19 EEG channels (average) of 19, 256 Hz, 43416 s of 48557 s analysed (20164 windows, 143 rejected), PDR 8.03 Hz, rBSI 0.32, exponent 1.488, 11.2s
+2026-11-13 16:37:56,083 - INFO - [7/41] sub-03_ses-01_task-szMonitoring_run-00 (sub-03/ses-01/eeg/sub-03_ses-01_task-szMonitoring_run-00_desc-preproc_eeg.edf)
+2026-11-13 16:38:05,017 - INFO - sub-03_ses-01_task-szMonitoring_run-00: 18 EEG channels (average) of 19, 256 Hz, 38634 s of 46637 s analysed (18505 windows, 741 rejected), PDR 7.7 Hz, rBSI 0.106, exponent 1.525, 8.9s
+2026-11-13 16:38:05,022 - INFO - [8/41] sub-03_ses-01_task-szMonitoring_run-01 (sub-03/ses-01/eeg/sub-03_ses-01_task-szMonitoring_run-01_desc-preproc_eeg.edf)
+2026-11-13 16:38:14,112 - INFO - sub-03_ses-01_task-szMonitoring_run-01: 19 EEG channels (average) of 19, 256 Hz, 36342 s of 40580 s analysed (17379 windows, 570 rejected), PDR 7.69 Hz, rBSI 0.071, exponent 1.4, 9.1s
+2026-11-13 16:38:14,127 - INFO - [9/41] sub-05_ses-01_task-szMonitoring_run-00 (sub-05/ses-01/eeg/sub-05_ses-01_task-szMonitoring_run-00_desc-preproc_eeg.edf)
+2026-11-13 16:38:17,385 - INFO - sub-05_ses-01_task-szMonitoring_run-00: 19 EEG channels (average) of 19, 256 Hz, 7530 s of 9245 s analysed (3516 windows, 284 rejected), PDR 9.19 Hz, rBSI 0.273, exponent 0.68, 3.3s
+2026-11-13 16:38:17,386 - INFO - [10/41] sub-05_ses-01_task-szMonitoring_run-01 (sub-05/ses-01/eeg/sub-05_ses-01_task-szMonitoring_run-01_desc-preproc_eeg.edf)
+2026-11-13 16:38:19,949 - INFO - sub-05_ses-01_task-szMonitoring_run-01: 18 EEG channels (average) of 19, 256 Hz, 5414 s of 7554 s analysed (2541 windows, 411 rejected), PDR 9.07 Hz, rBSI 0.211, exponent 1.178, 2.6s
+2026-11-13 16:38:19,951 - INFO - [11/41] sub-05_ses-01_task-szMonitoring_run-02 (sub-05/ses-01/eeg/sub-05_ses-01_task-szMonitoring_run-02_desc-preproc_eeg.edf)
+2026-11-13 16:38:21,930 - INFO - sub-05_ses-01_task-szMonitoring_run-02: 17 EEG channels (average) of 19, 256 Hz, 3386 s of 4928 s analysed (1503 windows, 292 rejected), PDR  Hz, rBSI 0.246, exponent 0.461, 2.0s
+2026-11-13 16:38:21,931 - INFO - [12/41] sub-06_ses-01_task-szMonitoring_run-00 (sub-06/ses-01/eeg/sub-06_ses-01_task-szMonitoring_run-00_desc-preproc_eeg.edf)
+2026-11-13 16:38:24,855 - INFO - sub-06_ses-01_task-szMonitoring_run-00: 19 EEG channels (average) of 19, 256 Hz, 8800 s of 9615 s analysed (4233 windows, 3 rejected), PDR 6.46 Hz, rBSI 0.0354, exponent 1.94, 2.9s
+2026-11-13 16:38:24,856 - INFO - [13/41] sub-06_ses-01_task-szMonitoring_run-01 (sub-06/ses-01/eeg/sub-06_ses-01_task-szMonitoring_run-01_desc-preproc_eeg.edf)
+2026-11-13 16:38:28,534 - INFO - sub-06_ses-01_task-szMonitoring_run-01: 19 EEG channels (average) of 19, 256 Hz, 11812 s of 12620 s analysed (5668 windows, 21 rejected), PDR 6.58 Hz, rBSI 0.0533, exponent 1.021, 3.7s
+2026-11-13 16:38:28,540 - INFO - [14/41] sub-06_ses-01_task-szMonitoring_run-02 (sub-06/ses-01/eeg/sub-06_ses-01_task-szMonitoring_run-02_desc-preproc_eeg.edf)
+2026-11-13 16:38:31,427 - INFO - sub-06_ses-01_task-szMonitoring_run-02: 19 EEG channels (average) of 19, 256 Hz, 7386 s of 8180 s analysed (3559 windows, 30 rejected), PDR 6.72 Hz, rBSI 0.0688, exponent 1.577, 2.9s
+2026-11-13 16:38:31,429 - INFO - [15/41] sub-06_ses-01_task-szMonitoring_run-03 (sub-06/ses-01/eeg/sub-06_ses-01_task-szMonitoring_run-03_desc-preproc_eeg.edf)
+2026-11-13 16:38:34,064 - INFO - sub-06_ses-01_task-szMonitoring_run-03: 19 EEG channels (average) of 19, 256 Hz, 6142 s of 7025 s analysed (2924 windows, 35 rejected), PDR 6.2 Hz, rBSI 0.175, exponent 1.08, 2.6s
+2026-11-13 16:38:34,065 - INFO - [16/41] sub-06_ses-01_task-szMonitoring_run-04 (sub-06/ses-01/eeg/sub-06_ses-01_task-szMonitoring_run-04_desc-preproc_eeg.edf)
+2026-11-13 16:38:36,635 - INFO - sub-06_ses-01_task-szMonitoring_run-04: 19 EEG channels (average) of 19, 256 Hz, 5212 s of 6022 s analysed (2434 windows, 87 rejected), PDR 11.3 Hz, rBSI 0.045, exponent 1.192, 2.6s
+2026-11-13 16:38:36,638 - INFO - [17/41] sub-07_ses-01_task-szMonitoring_run-00 (sub-07/ses-01/eeg/sub-07_ses-01_task-szMonitoring_run-00_desc-preproc_eeg.edf)
+2026-11-13 16:38:44,864 - INFO - sub-07_ses-01_task-szMonitoring_run-00: 19 EEG channels (average) of 19, 256 Hz, 26398 s of 31448 s analysed (12476 windows, 1001 rejected), PDR  Hz, rBSI 0.123, exponent 1.51, 8.2s
+2026-11-13 16:38:44,877 - INFO - [18/41] sub-09_ses-01_task-szMonitoring_run-00 (sub-09/ses-01/eeg/sub-09_ses-01_task-szMonitoring_run-00_desc-preproc_eeg.edf)
+2026-11-13 16:38:47,565 - INFO - sub-09_ses-01_task-szMonitoring_run-00: 17 EEG channels (average) of 19, 256 Hz, 6750 s of 8233 s analysed (3119 windows, 214 rejected), PDR  Hz, rBSI 0.0353, exponent 0.922, 2.7s
+2026-11-13 16:38:47,566 - INFO - [19/41] sub-09_ses-01_task-szMonitoring_run-01 (sub-09/ses-01/eeg/sub-09_ses-01_task-szMonitoring_run-01_desc-preproc_eeg.edf)
+2026-11-13 16:38:50,348 - INFO - sub-09_ses-01_task-szMonitoring_run-01: 17 EEG channels (average) of 19, 256 Hz, 7534 s of 8353 s analysed (3539 windows, 0 rejected), PDR  Hz, rBSI 0.063, exponent 0.851, 2.8s
+2026-11-13 16:38:50,351 - INFO - [20/41] sub-09_ses-01_task-szMonitoring_run-02 (sub-09/ses-01/eeg/sub-09_ses-01_task-szMonitoring_run-02_desc-preproc_eeg.edf)
+2026-11-13 16:38:53,111 - INFO - sub-09_ses-01_task-szMonitoring_run-02: 18 EEG channels (average) of 19, 256 Hz, 7008 s of 8065 s analysed (3172 windows, 17 rejected), PDR  Hz, rBSI 0.213, exponent 0.605, 2.8s
+2026-11-13 16:38:53,115 - INFO - [21/41] sub-10_ses-01_task-szMonitoring_run-00 (sub-10/ses-01/eeg/sub-10_ses-01_task-szMonitoring_run-00_desc-preproc_eeg.edf)
+2026-11-13 16:38:56,623 - INFO - sub-10_ses-01_task-szMonitoring_run-00: 19 EEG channels (average) of 19, 256 Hz, 8930 s of 9982 s analysed (4205 windows, 53 rejected), PDR 7.6 Hz, rBSI 0.0665, exponent 2.034, 3.5s
+2026-11-13 16:38:56,625 - INFO - [22/41] sub-10_ses-01_task-szMonitoring_run-01 (sub-10/ses-01/eeg/sub-10_ses-01_task-szMonitoring_run-01_desc-preproc_eeg.edf)
+2026-11-13 16:38:59,792 - INFO - sub-10_ses-01_task-szMonitoring_run-01: 19 EEG channels (average) of 19, 256 Hz, 7762 s of 8565 s analysed (3627 windows, 0 rejected), PDR 7.98 Hz, rBSI 0.102, exponent 0.883, 3.2s
+2026-11-13 16:38:59,795 - INFO - [23/41] sub-10_ses-01_task-szMonitoring_run-02 (sub-10/ses-01/eeg/sub-10_ses-01_task-szMonitoring_run-02_desc-preproc_eeg.edf)
+2026-11-13 16:39:02,794 - INFO - sub-10_ses-01_task-szMonitoring_run-02: 19 EEG channels (average) of 19, 256 Hz, 7624 s of 8554 s analysed (3606 windows, 22 rejected), PDR 7.82 Hz, rBSI 0.0386, exponent 1.257, 3.0s
+2026-11-13 16:39:02,799 - INFO - [24/41] sub-10_ses-01_task-szMonitoring_run-03 (sub-10/ses-01/eeg/sub-10_ses-01_task-szMonitoring_run-03_desc-preproc_eeg.edf)
+2026-11-13 16:39:05,801 - INFO - sub-10_ses-01_task-szMonitoring_run-03: 17 EEG channels (average) of 19, 256 Hz, 7526 s of 8713 s analysed (3536 windows, 108 rejected), PDR 8.92 Hz, rBSI 0.0486, exponent 1.41, 3.0s
+2026-11-13 16:39:05,802 - INFO - [25/41] sub-10_ses-01_task-szMonitoring_run-04 (sub-10/ses-01/eeg/sub-10_ses-01_task-szMonitoring_run-04_desc-preproc_eeg.edf)
+2026-11-13 16:39:10,542 - INFO - sub-10_ses-01_task-szMonitoring_run-04: 19 EEG channels (average) of 19, 256 Hz, 14046 s of 16648 s analysed (6584 windows, 280 rejected), PDR 7.96 Hz, rBSI 0.0372, exponent 1.187, 4.7s
+2026-11-13 16:39:10,543 - INFO - [26/41] sub-10_ses-01_task-szMonitoring_run-05 (sub-10/ses-01/eeg/sub-10_ses-01_task-szMonitoring_run-05_desc-preproc_eeg.edf)
+2026-11-13 16:39:14,656 - INFO - sub-10_ses-01_task-szMonitoring_run-05: 19 EEG channels (average) of 19, 256 Hz, 12214 s of 14955 s analysed (5541 windows, 208 rejected), PDR 8.23 Hz, rBSI 0.0546, exponent 1.143, 4.1s
+2026-11-13 16:39:14,658 - INFO - [27/41] sub-11_ses-01_task-szMonitoring_run-00 (sub-11/ses-01/eeg/sub-11_ses-01_task-szMonitoring_run-00_desc-preproc_eeg.edf)
+2026-11-13 16:39:17,460 - INFO - sub-11_ses-01_task-szMonitoring_run-00: 19 EEG channels (average) of 19, 256 Hz, 7198 s of 8677 s analysed (3398 windows, 47 rejected), PDR  Hz, rBSI 0.0793, exponent 0.925, 2.8s
+2026-11-13 16:39:17,465 - INFO - [28/41] sub-12_ses-01_task-szMonitoring_run-00 (sub-12/ses-01/eeg/sub-12_ses-01_task-szMonitoring_run-00_desc-preproc_eeg.edf)
+2026-11-13 16:39:20,582 - INFO - sub-12_ses-01_task-szMonitoring_run-00: 19 EEG channels (average) of 19, 256 Hz, 8456 s of 9774 s analysed (4003 windows, 69 rejected), PDR 9.19 Hz, rBSI 0.18, exponent 0.904, 3.1s
+2026-11-13 16:39:20,586 - INFO - [29/41] sub-12_ses-01_task-szMonitoring_run-01 (sub-12/ses-01/eeg/sub-12_ses-01_task-szMonitoring_run-01_desc-preproc_eeg.edf)
+2026-11-13 16:39:22,343 - INFO - sub-12_ses-01_task-szMonitoring_run-01: 19 EEG channels (average) of 19, 256 Hz, 1572 s of 1989 s analysed (726 windows, 22 rejected), PDR 9.34 Hz, rBSI 0.188, exponent 0.724, 1.8s
+2026-11-13 16:39:22,350 - INFO - [30/41] sub-12_ses-01_task-szMonitoring_run-02 (sub-12/ses-01/eeg/sub-12_ses-01_task-szMonitoring_run-02_desc-preproc_eeg.edf)
+2026-11-13 16:39:25,077 - INFO - sub-12_ses-01_task-szMonitoring_run-02: 19 EEG channels (average) of 19, 256 Hz, 9134 s of 10194 s analysed (4382 windows, 36 rejected), PDR 9.61 Hz, rBSI 0.0939, exponent 0.807, 2.7s
+2026-11-13 16:39:25,079 - INFO - [31/41] sub-13_ses-01_task-szMonitoring_run-00 (sub-13/ses-01/eeg/sub-13_ses-01_task-szMonitoring_run-00_desc-preproc_eeg.edf)
+2026-11-13 16:39:28,196 - INFO - sub-13_ses-01_task-szMonitoring_run-00: 19 EEG channels (average) of 19, 256 Hz, 8198 s of 9355 s analysed (3807 windows, 92 rejected), PDR 8.38 Hz, rBSI 0.054, exponent 1.216, 3.1s
+2026-11-13 16:39:28,200 - INFO - [32/41] sub-13_ses-01_task-szMonitoring_run-01 (sub-13/ses-01/eeg/sub-13_ses-01_task-szMonitoring_run-01_desc-preproc_eeg.edf)
+2026-11-13 16:39:31,172 - INFO - sub-13_ses-01_task-szMonitoring_run-01: 18 EEG channels (average) of 19, 256 Hz, 7588 s of 9312 s analysed (3553 windows, 253 rejected), PDR 8.47 Hz, rBSI 0.191, exponent 0.978, 3.0s
+2026-11-13 16:39:31,173 - INFO - [33/41] sub-13_ses-01_task-szMonitoring_run-02 (sub-13/ses-01/eeg/sub-13_ses-01_task-szMonitoring_run-02_desc-preproc_eeg.edf)
+2026-11-13 16:39:34,504 - INFO - sub-13_ses-01_task-szMonitoring_run-02: 19 EEG channels (average) of 19, 256 Hz, 10754 s of 12527 s analysed (5065 windows, 68 rejected), PDR  Hz, rBSI 0.143, exponent 1.171, 3.3s
+2026-11-13 16:39:34,505 - INFO - [34/41] sub-14_ses-01_task-szMonitoring_run-00 (sub-14/ses-01/eeg/sub-14_ses-01_task-szMonitoring_run-00_desc-preproc_eeg.edf)
+2026-11-13 16:39:37,237 - INFO - sub-14_ses-01_task-szMonitoring_run-00: 19 EEG channels (average) of 19, 256 Hz, 7084 s of 7868 s analysed (3376 windows, 12 rejected), PDR  Hz, rBSI 0.0992, exponent 0.77, 2.7s
+2026-11-13 16:39:37,238 - INFO - [35/41] sub-14_ses-01_task-szMonitoring_run-01 (sub-14/ses-01/eeg/sub-14_ses-01_task-szMonitoring_run-01_desc-preproc_eeg.edf)
+2026-11-13 16:39:40,424 - INFO - sub-14_ses-01_task-szMonitoring_run-01: 19 EEG channels (average) of 19, 256 Hz, 8422 s of 9165 s analysed (4054 windows, 13 rejected), PDR  Hz, rBSI 0.0482, exponent 0.696, 3.2s
+2026-11-13 16:39:40,427 - INFO - [36/41] sub-14_ses-01_task-szMonitoring_run-02 (sub-14/ses-01/eeg/sub-14_ses-01_task-szMonitoring_run-02_desc-preproc_eeg.edf)
+2026-11-13 16:39:50,107 - INFO - sub-14_ses-01_task-szMonitoring_run-02: 19 EEG channels (average) of 19, 256 Hz, 39372 s of 41995 s analysed (19071 windows, 8 rejected), PDR 10.6 Hz, rBSI 0.0769, exponent 1.469, 9.7s
+2026-11-13 16:39:50,121 - INFO - [37/41] sub-14_ses-01_task-szMonitoring_run-03 (sub-14/ses-01/eeg/sub-14_ses-01_task-szMonitoring_run-03_desc-preproc_eeg.edf)
+2026-11-13 16:39:54,023 - INFO - sub-14_ses-01_task-szMonitoring_run-03: 19 EEG channels (average) of 19, 256 Hz, 13162 s of 14642 s analysed (6257 windows, 42 rejected), PDR 10.2 Hz, rBSI 0.0476, exponent 1.226, 3.9s
+2026-11-13 16:39:54,025 - INFO - [38/41] sub-16_ses-01_task-szMonitoring_run-00 (sub-16/ses-01/eeg/sub-16_ses-01_task-szMonitoring_run-00_desc-preproc_eeg.edf)
+2026-11-13 16:39:57,223 - INFO - sub-16_ses-01_task-szMonitoring_run-00: 19 EEG channels (average) of 19, 256 Hz, 6256 s of 8270 s analysed (2949 windows, 359 rejected), PDR 11.2 Hz, rBSI 0.115, exponent 0.97, 3.2s
+2026-11-13 16:39:57,230 - INFO - [39/41] sub-16_ses-01_task-szMonitoring_run-01 (sub-16/ses-01/eeg/sub-16_ses-01_task-szMonitoring_run-01_desc-preproc_eeg.edf)
+2026-11-13 16:40:00,184 - INFO - sub-16_ses-01_task-szMonitoring_run-01: 16 EEG channels (average) of 19, 256 Hz, 7928 s of 9297 s analysed (3765 windows, 163 rejected), PDR 10.3 Hz, rBSI 0.12, exponent 1.004, 3.0s
+2026-11-13 16:40:00,185 - INFO - [40/41] sub-17_ses-01_task-szMonitoring_run-00 (sub-17/ses-01/eeg/sub-17_ses-01_task-szMonitoring_run-00_desc-preproc_eeg.edf)
+2026-11-13 16:40:03,306 - INFO - sub-17_ses-01_task-szMonitoring_run-00: 19 EEG channels (average) of 19, 256 Hz, 8218 s of 9277 s analysed (3911 windows, 24 rejected), PDR  Hz, rBSI 0.0747, exponent 0.678, 3.1s
+2026-11-13 16:40:03,309 - INFO - [41/41] sub-17_ses-01_task-szMonitoring_run-01 (sub-17/ses-01/eeg/sub-17_ses-01_task-szMonitoring_run-01_desc-preproc_eeg.edf)
+2026-11-13 16:40:06,959 - INFO - sub-17_ses-01_task-szMonitoring_run-01: 19 EEG channels (average) of 19, 256 Hz, 8320 s of 9172 s analysed (3986 windows, 11 rejected), PDR  Hz, rBSI 0.164, exponent 0.838, 3.6s
+2026-11-13 16:40:07,071 - INFO - 41 of 41 recording(s) done in 155.2s, peak memory 896 MB; wrote /data/output/eeg-spectral

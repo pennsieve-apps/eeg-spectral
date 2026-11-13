@@ -95,6 +95,15 @@ parameters:
     label: PDR search range (Hz)
     description: The posterior dominant rhythm is the strongest specparam peak of the posterior channels in this range.
     defaultValue: "6-14"
+  - name: PDR_MIN_PEAK
+    type: number
+    label: PDR minimum peak (log10)
+    description: >-
+      A 6-14 Hz peak counts as the posterior dominant rhythm (and as a channel's alpha peak) only
+      when it rises at least this much above the 1/f fit, in log10 power (0.2 = 1.6 times the
+      background at its centre). Weaker peaks are reported as no clear PDR.
+    defaultValue: 0.2
+    min: 0
   - name: PDR_WINDOWS
     type: string
     label: PDR windows
