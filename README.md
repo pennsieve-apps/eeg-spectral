@@ -170,7 +170,7 @@ almost all of the time is reading the EDF and the FFTs, single-threaded.
 |---|---|---|---|---|
 | Synthetic fixture (`make lambda-check`) | 2 (6 and 4 min) | 4.8 s | 204 MB | (rerun with `make lambda-check`) |
 | eeg-prep's Siena derivative (`--cpus 2 --memory 2g`) | 41 runs, 0.5-13.5 h, 41 ok | 155 s | 896 MB | `measurements/siena-eeg-prep.log` |
-| eeg-prep's CHB-MIT chb01 derivative (bipolar) | 42 x 1 h, 42 ok | 113 s | 459 MB | `measurements/chbmit-eeg-prep.log` |
+| eeg-prep's CHB-MIT chb01 derivative (bipolar) | 42 x 1 h, 42 ok | 79 s | 467 MB | `measurements/chbmit-eeg-prep.log` |
 | eeg-prep's ds003555 derivative (3 h sleep EEG, 1024 Hz) | 3, 3 ok | 25 s | 848 MB | `measurements/ds003555-eeg-prep.log` |
 | Raw BIDS Siena (before eeg-prep) | 41 runs, 41 ok | 125 s | 824 MB | `measurements/siena-raw-bids.log` |
 | eeg-prep's Siena sub-01 run-00 alone, 13.5 h, Lambda-style (`--cpus 1`, read-only, uid 65534) | 1 | 11.6 s | 567 MB | `measurements/siena-sub-01-run-00-lambda-style.log` |
@@ -193,7 +193,8 @@ What it found on eeg-prep's derivatives (the workflow's input):
   eeg-prep had already marked the technical artifacts.
 - **CHB-MIT chb01** (bipolar only, 42 hours, child): a clear 6-14 Hz posterior peak in 13 of 42
   hours, 11.7-13.4 Hz, i.e. most likely sleep spindles rather than a waking PDR (no state
-  annotations; see Limitations); rBSI median 0.10; exponent median 1.92; 20 % of windows rejected
+  annotations; see Limitations); rBSI median 0.10 (0.03-0.21, with the T7-FT9/FT10-T8 pair, which CHB-MIT stores reversed);
+  exponent median 1.92; 20 % of windows rejected
   in the median hour.
 - **ds003555** (children, sleep EEG): no clear PDR in any of the 3, as expected for sleep;
   exponents 1.9-2.8.

@@ -146,6 +146,10 @@ def homologous_pairs(names: list[str], contacts: dict[str, tuple[str, ...]]) -> 
         m = mirror(c)
         if m and m in have:
             out.append((n, m))
+        elif m and len(c) == 2 and "-".join(reversed(m.split("-"))) in have:
+            # a bipolar mirror stored the other way round (CHB-MIT: T7-FT9 and FT10-T8): the same
+            # derivation with the opposite sign, so the same power spectrum
+            out.append((n, "-".join(reversed(m.split("-")))))
     return out
 
 

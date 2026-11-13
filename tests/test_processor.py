@@ -368,3 +368,10 @@ def test_strongest_peak_threshold():
     assert S.strongest_peak(fit, 6, 14)[0] == 9.0
     assert S.strongest_peak(fit, 6, 14, min_power=0.2) is None
 
+
+
+def test_homologous_pairs_with_reversed_bipolar_mirror():
+    """CHB-MIT stores T7-FT9 on the left and FT10-T8 (not T8-FT10) on the right."""
+    names = ["Fp1-F7", "Fp2-F8", "T7-FT9", "FT10-T8", "Fz-Cz"]
+    contacts = {n: tuple(n.split("-")) for n in names}
+    assert C.homologous_pairs(names, contacts) == [("Fp1-F7", "Fp2-F8"), ("T7-FT9", "FT10-T8")]
